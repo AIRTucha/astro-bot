@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:16.2-alpine
+    restart: "no"
+    environment:
+      POSTGRES_PASSWORD: local_password
+      POSTGRES_USER: postgres
+      POSTGRES_DB: astro-db
+
+    healthcheck:
+      test: ["CMD-SHELL", "psql -U postgres"]
+      interval: 2s
+      timeout: 30s
+      retries: 10
+
+    volumes:
+      - ./data/postgresql:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  app:
+    build:
+      context: .
+      target: development
+    depends_on:
+      - db
+    restart: "no"
+    volumes:
+      - .:/app
