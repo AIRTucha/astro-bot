@@ -14,6 +14,8 @@ langchain-community = "^0.0.29"
 langchain-openai = "^0.1.1"
 psycopg2-binary = "^2.9.9"
 sqlalchemy = "^2.0.29"
+mypy = "^1.10.0"
+types-psycopg2 = "^2.9.21.20240417"
 
 [build-system]
 requires = ["poetry-core"]

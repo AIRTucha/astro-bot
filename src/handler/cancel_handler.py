@@ -8,6 +8,9 @@ from src.bot_utils.send_critical_error import send_critical_error
 
 
 async def handle_cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if update.message is None or update.message.from_user is None:
+        logger.error("Update message is None")
+        return
     try:
         logger.info("User %s canceled the conversation.", update.message.from_user.id)
         await send_cancel_message(update)

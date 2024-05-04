@@ -1,4 +1,25 @@
-languages = {
+from telegram import Update
+from src.logger.logger import logger
+from functools import partial
+
+
+def _get_translation(translations: dict[str, str], update: Update) -> str:
+    if (
+        update.message is None
+        or update.message.from_user is None
+        or update.message.from_user.language_code is None
+    ):
+        logger.error("No language code found in the update")
+    else:
+        lang = update.message.from_user.language_code
+        if lang in translations:
+            return translations[lang]
+        else:
+            logger.error(f"Language code {lang} not found")
+    return translations["en"]
+
+
+_languages = {
     # "ab": "Abkhazian",
     # "aa": "Afar",
     # "af": "Afrikaans",
@@ -184,7 +205,11 @@ languages = {
     # "zu": "Zulu",
 }
 
-error_messages = {
+
+get_language = partial(_get_translation, _languages)
+
+
+_error_messages = {
     "sq": "Na vjen keq, nuk mund\u00ebm t\u00eb p\u00ebrpunojm\u00eb k\u00ebrkes\u00ebn tuaj p\u00ebr momentin. Ju lutemi provoni p\u00ebrs\u00ebri m\u00eb von\u00eb.",
     "ar": "\u0639\u0630\u0631\u0627\u064b\u060c \u0644\u0645 \u0646\u062a\u0645\u0643\u0646 \u0645\u0646 \u0645\u0639\u0627\u0644\u062c\u0629 \u0637\u0644\u0628\u0643 \u0641\u064a \u0627\u0644\u0648\u0642\u062a \u0627\u0644\u062d\u0627\u0644\u064a. \u064a\u0631\u062c\u0649 \u0627\u0644\u0645\u062d\u0627\u0648\u0644\u0629 \u0645\u0631\u0629 \u0623\u062e\u0631\u0649 \u0644\u0627\u062d\u0642\u0627\u064b.",
     "hy": "\u0546\u0565\u0580\u0578\u0572\u0578\u0582\u0569\u0575\u0578\u0582\u0576, \u0574\u0565\u0576\u0584 \u0579\u056f\u0561\u0580\u0578\u0572\u0561\u0581\u0561\u0576\u0584 \u0574\u0577\u0561\u056f\u0565\u056c \u0571\u0565\u0580 \u0570\u0561\u0580\u0581\u0578\u0582\u0574\u0568 \u0561\u0575\u057d \u057a\u0561\u0570\u056b\u0576: \u053d\u0576\u0564\u0580\u0578\u0582\u0574 \u0565\u0576\u0584 \u056f\u0580\u056f\u056b\u0576 \u0583\u0578\u0580\u0571\u0565\u056c \u0578\u0580\u0578\u0577 \u056a\u0561\u0574\u0561\u0576\u0561\u056f \u0561\u0576\u0581\u0589",
@@ -256,7 +281,11 @@ error_messages = {
     "cy": "Mae'n ddrwg gennym, ni allwn brosesu'ch cais ar hyn o bryd. Rhowch gynnig arall arni yn nes ymlaen.",
 }
 
-subscribe = {
+
+get_error_message = partial(_get_translation, _error_messages)
+
+
+_subscribe = {
     "sq": "Abonohu",
     "ar": "\u0627\u0644\u0627\u0634\u062a\u0631\u0627\u0643",
     "hy": "\u0532\u0561\u056a\u0561\u0576\u0578\u0580\u0564\u0561\u0563\u0580\u057e\u0565\u056c",
@@ -328,7 +357,9 @@ subscribe = {
     "cy": "Tanysgrifio",
 }
 
-unsubscribe = {
+get_subscribe = partial(_get_translation, _subscribe)
+
+_unsubscribe = {
     "sq": "\u00c7abonohu",
     "ar": "\u0625\u0644\u063a\u0627\u0621 \u0627\u0644\u0627\u0634\u062a\u0631\u0627\u0643",
     "hy": "\u054e\u0565\u0580\u0561\u0581\u0576\u0565\u056c \u0562\u0561\u056a\u0561\u0576\u0578\u0580\u0564\u0561\u0563\u0580\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0568",
@@ -399,3 +430,5 @@ unsubscribe = {
     "vi": "H\u1ee7y \u0111\u0103ng k\u00fd",
     "cy": "Dad-tanysgrifio",
 }
+
+get_unsubscribe = partial(_get_translation, _unsubscribe)

@@ -12,21 +12,22 @@ from src.bot_utils.send_welcome_message import (
     send_welcome_again_message,
 )
 from src.bot_utils.send_critical_error import send_critical_error
+from src.bot_utils.update_get_user_data import get_user_id
 
 
 async def handle_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     try:
         with Session(engine) as session:
             user = get_user_from_update(session, update)
-
+            user_id = get_user_id(update)
             if user is None:
-                logger.info("User %s id created", update.message.from_user.id)
+                logger.info("User %s id created", user_id)
                 create_user(session, update)
 
-            logger.info("User %s started the bot", update.message.from_user.id)
-            if user.date_of_birth_text is None:
+            logger.info("User %s started the bot", user_id)
+            if user is None or user.date_of_birth_text is None:
                 await send_welcome_message(update)
             else:
-                await send_welcome_again_message(update)
+                await send_welcome_again_message(user, update)
     except Exception as e:
         await send_critical_error(update, str(e))

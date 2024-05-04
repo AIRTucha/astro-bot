@@ -10,6 +10,8 @@ from .prompts import (
     translate_system_error_prompt,
     subscribed_prompt,
     unsubscribed_prompt,
+    daily_forecast_subscribe_inquiry_prompt,
+    daily_forecast_unsubscribe_inquiry_prompt,
 )
 from .parsers import birth_day_parser
 from src.llm.prompt import prompt, model
@@ -18,6 +20,14 @@ from src.llm.prompt import prompt, model
 welcome_chain = prompt(welcome_prompt) | StrOutputParser()
 
 welcome_again_chain = prompt(welcome_again_prompt) | StrOutputParser()
+
+daily_forecast_subscribe_inquiry_chain = (
+    prompt(daily_forecast_subscribe_inquiry_prompt) | StrOutputParser()
+)
+
+daily_forecast_unsubscribe_inquiry_chain = (
+    prompt(daily_forecast_unsubscribe_inquiry_prompt) | StrOutputParser()
+)
 
 parse_birthday_chain = (
     prompt(
@@ -45,3 +55,11 @@ translate_system_error_chain = (
 subscribed_chain = prompt(subscribed_prompt) | StrOutputParser()
 
 unsubscribed_chain = prompt(unsubscribed_prompt) | StrOutputParser()
+
+daily_forecast_subscribe_inquiry_chain = (
+    prompt(daily_forecast_subscribe_inquiry_prompt) | StrOutputParser()
+)
+
+daily_forecast_unsubscribe_inquiry_chain = (
+    prompt(daily_forecast_unsubscribe_inquiry_prompt) | StrOutputParser()
+)
