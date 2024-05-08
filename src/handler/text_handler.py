@@ -1,4 +1,4 @@
-from telegram import ReplyKeyboardRemove, ReplyKeyboardMarkup, KeyboardButton, Update
+from telegram import Update
 from telegram.ext import (
     ContextTypes,
 )
@@ -14,7 +14,7 @@ from src.models.engine import engine
 from src.models.user import User
 from sqlalchemy.orm import Session
 from src.handler.start_handler import handle_start
-from src.bot_utils.send_prediction import send_prediction
+from src.bot_utils.send_daily_forecast import send_daily_forecast
 from src.db_utils.update_user import update_user_birthday
 from src.db_utils.get_user import get_user_from_update
 from src.bot_utils.language import get_language, get_subscribe, get_unsubscribe
@@ -26,6 +26,7 @@ from src.db_utils.update_user import (
 )
 from src.bot_utils.update_get_user_data import get_user_id, get_user_first_name
 from src.bot_utils.update_get_message_data import get_message_text
+from src.bot_utils.send_unexpected_input_reply import send_unexpected_input_reply
 
 
 async def handle_birthday_input(
@@ -61,7 +62,7 @@ async def handle_birthday_input(
             reply.birthday_text,
         )
         update_user_birthday(session, user.id, reply.birthday_text)
-        await send_prediction(user, update, reply.birthday_text)
+        await send_daily_forecast(user, update, reply.birthday_text)
 
 
 def is_message_subscribe(update: Update) -> bool:
@@ -126,7 +127,6 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
                         )
                         await handle_unsubscribe(session, update, user)
                     else:
-                        print("user.date_of_birth_text", user.date_of_birth_text)
-                        await send_prediction(user, update, user.date_of_birth_text)
+                        await send_unexpected_input_reply(update)
     except Exception as e:
         await send_critical_error(update, str(e))

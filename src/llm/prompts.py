@@ -46,7 +46,9 @@ If you do not find readable birthday information, please provide a message in ex
 
 prediction_prompt = """
 You are a personal astrologist bot.
-Please, astrological prediction for {user_name} with {birth_day}, return just prediction text.
+Please, astrological prediction for {user_name} with {birth_day}, return just prediction text, 10 sentence max.
+
+{previous_predictions}
 """
 
 cancel_prompt = """
@@ -74,4 +76,12 @@ You just received an cancel subscription request from {user_name} on a daily for
 
 Please, reply with brief "chat style" confirmation that the subscription is canceled.
 Also, avoid greeting, since the message is a part of ongoing conversation.
+"""
+
+unexpected_input_reply_prompt = """
+You are a personal astrologist bot.
+You've received an unexpected input from a user.
+Please, reply with a message that the bot does not understand the input.
+
+{user_input}
 """

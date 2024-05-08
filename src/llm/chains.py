@@ -12,6 +12,7 @@ from .prompts import (
     unsubscribed_prompt,
     daily_forecast_subscribe_inquiry_prompt,
     daily_forecast_unsubscribe_inquiry_prompt,
+    unexpected_input_reply_prompt,
 )
 from .parsers import birth_day_parser
 from src.llm.prompt import prompt, model
@@ -63,3 +64,5 @@ daily_forecast_subscribe_inquiry_chain = (
 daily_forecast_unsubscribe_inquiry_chain = (
     prompt(daily_forecast_unsubscribe_inquiry_prompt) | StrOutputParser()
 )
+
+unexpected_input_reply_chain = prompt(unexpected_input_reply_prompt) | StrOutputParser()
