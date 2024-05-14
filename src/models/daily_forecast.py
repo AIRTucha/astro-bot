@@ -3,6 +3,7 @@ from .base import Base
 from sqlalchemy import Integer, Text, Date, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from src.models.user import User
+from datetime import date
 
 
 class DailyForecast(Base):
@@ -10,7 +11,7 @@ class DailyForecast(Base):
 
     id: Mapped[int] = mapped_column(Integer, autoincrement=True, primary_key=True)
     forecast_text: Mapped[str] = mapped_column(Text, nullable=False)
-    created_at: Mapped[Date] = mapped_column(Date, nullable=False, index=True)
+    created_at: Mapped[date] = mapped_column(Date, nullable=False, index=True)
 
     user: Mapped[User] = relationship(
         Integer,

@@ -16,6 +16,7 @@ psycopg2-binary = "^2.9.9"
 sqlalchemy = "^2.0.29"
 mypy = "^1.10.0"
 types-psycopg2 = "^2.9.21.20240417"
+fastapi = "^0.111.0"
 
 [build-system]
 requires = ["poetry-core"]

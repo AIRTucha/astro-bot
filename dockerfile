@@ -26,7 +26,9 @@ RUN poetry config virtualenvs.create false \
 
 FROM base as development
 
-CMD ["python", "main.py"]
+# CMD ["python", "main.py"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--reload"]
+
 
 FROM base as production
 
