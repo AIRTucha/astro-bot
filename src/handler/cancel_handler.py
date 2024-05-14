@@ -5,15 +5,12 @@ from telegram.ext import (
 from ..logger.logger import logger
 from src.bot_utils.send_cancel_message import send_cancel_message
 from src.bot_utils.send_critical_error import send_critical_error
+from src.bot_utils.reply_chat import ReplyChat
 
 
 async def handle_cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    if update.message is None or update.message.from_user is None:
-        logger.error("Update message is None")
-        return
+    chat = ReplyChat(update)
     try:
-        logger.info("User %s canceled the conversation.", update.message.from_user.id)
-        await send_cancel_message(update)
-
+        await send_cancel_message(chat)
     except Exception as e:
-        await send_critical_error(update, str(e))
+        await send_critical_error(chat, str(e))

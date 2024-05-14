@@ -5,8 +5,6 @@ from src.models.user import User
 from src.bot_utils.send_daily_forecast_subscribe_unsubsribe_message import (
     send_daily_forecast_subscribe_unsubscribe_message,
 )
-from src.bot_utils.send_text import send_text
-from src.bot_utils.update_get_user_data import get_user_first_name
 from src.bot_utils.language import get_language, get_subscribe
 from src.db_utils.add_daily_forecast import add_daily_forecast
 from src.models.engine import engine
@@ -14,6 +12,8 @@ from sqlalchemy.orm import Session
 from src.db_utils.get_last_daily_forecasts import get_last_forecasts
 from src.models.daily_forecast import DailyForecast
 from typing import List
+
+from src.bot_utils.chat import Chat
 
 previous_forecasts_title = """"
 Previous forecasts:
@@ -33,9 +33,9 @@ def format_last_forecasts(forecasts: List[DailyForecast]) -> str:
     return previous_forecasts_title + "\n".join([format_forecast(f) for f in forecasts])
 
 
-async def send_daily_forecast(user: User, update: Update, birthday_text: str) -> None:
-    user_name = get_user_first_name(update)
-    user_language = get_language(update)
+async def send_daily_forecast(user: User, chat: Chat, birthday_text: str) -> None:
+    user_name = chat.get_user_name()
+    user_language = get_language(chat)
     with Session(engine) as session:
         last_forecasts = get_last_forecasts(session, user.id, 3)
 
@@ -49,5 +49,5 @@ async def send_daily_forecast(user: User, update: Update, birthday_text: str) ->
         )
         add_daily_forecast(session, user.id, prediction)
 
-        await send_text(update, prediction, get_subscribe(update))
-        await send_daily_forecast_subscribe_unsubscribe_message(user, update)
+        await chat.send_text(prediction, get_subscribe(chat))
+        await send_daily_forecast_subscribe_unsubscribe_message(user, chat)

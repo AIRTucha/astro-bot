@@ -36,7 +36,7 @@ class Bot:
         await self.application.start()
         await self.application.updater.start_polling()
 
-        # await self.application.bot.send_message(chat_id=63033311, text="Bot started!")
+        # await self.application.bot.send_https://scontent.ffra2-1.fna.fbcdn.net/v/t39.30808-6/440389240_857552689750682_6349401513829990214_n.jpg?_nc_cat=1&ccb=1-7&_nc_sid=5f2048&_nc_ohc=JsGFdY6t_BcQ7kNvgEmA-zy&_nc_ht=scontent.ffra2-1.fna&oh=00_AYD4X320t3o9xoiHc9YziBW_0oeMMwDquOZS1g-mLrZT5g&oe=66443E52message(chat_id=63033311, text="Bot started!")
 
     async def stop(self):
         await self.application.updater.stop()

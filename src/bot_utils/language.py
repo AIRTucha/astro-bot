@@ -1,21 +1,15 @@
 from telegram import Update
 from src.logger.logger import logger
 from functools import partial
+from src.bot_utils.chat import Chat
 
 
-def _get_translation(translations: dict[str, str], update: Update) -> str:
-    if (
-        update.message is None
-        or update.message.from_user is None
-        or update.message.from_user.language_code is None
-    ):
-        logger.error("No language code found in the update")
+def _get_translation(translations: dict[str, str], chat: Chat) -> str:
+    lang = chat.get_language_code()
+    if lang in translations:
+        return translations[lang]
     else:
-        lang = update.message.from_user.language_code
-        if lang in translations:
-            return translations[lang]
-        else:
-            logger.error(f"Language code {lang} not found")
+        logger.error(f"Language code {lang} not found")
     return translations["en"]
 
 

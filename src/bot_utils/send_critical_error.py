@@ -1,12 +1,10 @@
 from src.logger.logger import logger
-from telegram import Update
-from src.bot_utils.send_text import send_text
-from src.bot_utils.update_get_user_data import get_user_id
 from src.bot_utils.language import get_error_message
+from src.bot_utils.chat import Chat
 
 
-async def send_critical_error(update: Update, error: str) -> None:
-    user_id = get_user_id(update)
+async def send_critical_error(chat: Chat, error: str) -> None:
+    user_id = chat.get_user_id()
     logger.error("User %s, got critical error %s", user_id, error)
-    error_message = get_error_message(update)
-    await send_text(update, error_message)
+    error_message = get_error_message(chat)
+    await chat.send_text(error_message)
