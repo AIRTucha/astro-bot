@@ -12,6 +12,8 @@ from src.logger.logger import logger
 from src.models.engine import engine
 from sqlalchemy.orm import Session
 from src.db_utils.get_users_for_forecast import get_users_for_forecast
+from src.bot_utils.bot_chat import BotChat
+from src.bot_utils.send_daily_forecast import send_daily_forecast
 
 
 class Bot:
@@ -23,6 +25,7 @@ class Bot:
             .write_timeout(20000)
             .build()
         )
+        self.application.bot
 
     async def start(self):
 
@@ -48,6 +51,6 @@ class Bot:
             users = await get_users_for_forecast(session)
             for user in users:
                 logger.info("Sending daily forecast to user %s", user.name)
+                botChat = BotChat(self.application.bot, user)
 
-                # await send_daily_forecast(user)
-        # await update.message.reply_text("Daily forecast sent!")
+                await send_daily_forecast(user, botChat)

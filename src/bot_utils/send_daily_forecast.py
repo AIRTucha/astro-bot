@@ -33,7 +33,7 @@ def format_last_forecasts(forecasts: List[DailyForecast]) -> str:
     return previous_forecasts_title + "\n".join([format_forecast(f) for f in forecasts])
 
 
-async def send_daily_forecast(user: User, chat: Chat, birthday_text: str) -> None:
+async def send_daily_forecast(user: User, chat: Chat) -> None:
     user_name = chat.get_user_name()
     user_language = get_language(chat)
     with Session(engine) as session:
@@ -42,7 +42,7 @@ async def send_daily_forecast(user: User, chat: Chat, birthday_text: str) -> Non
         prediction = prediction_chain.invoke(
             {
                 "user_name": user_name,
-                "birth_day": birthday_text,
+                "birth_day": user.date_of_birth_text,
                 "user_language": user_language,
                 "previous_predictions": format_last_forecasts(last_forecasts),
             }

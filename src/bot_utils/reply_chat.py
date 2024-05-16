@@ -6,6 +6,7 @@ from telegram import Update, ReplyKeyboardRemove, ReplyKeyboardMarkup, KeyboardB
 
 class ReplyChat(Chat):
     def __init__(self, update: Update):
+        update._bot
         if (
             update.message is None
             or update.message.from_user is None

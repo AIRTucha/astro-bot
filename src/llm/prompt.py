@@ -7,7 +7,7 @@ from langchain_core.utils.utils import convert_to_secret_str
 
 
 model = ChatOpenAI(
-    model="gpt-4",
+    model="gpt-3.5-turbo-0125",
     api_key=convert_to_secret_str(
         "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"
     ),

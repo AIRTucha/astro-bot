@@ -61,8 +61,8 @@ async def handle_birthday_input(
             user_input,
             reply.birthday_text,
         )
-        update_user_birthday(session, user.id, reply.birthday_text)
-        await send_daily_forecast(user, chat, reply.birthday_text)
+        update_user_birthday(session, user, reply.birthday_text)
+        await send_daily_forecast(user, chat)
 
 
 def is_message_subscribe(chat: Chat) -> bool:
@@ -94,7 +94,7 @@ async def handle_unsubscribe(session: Session, chat: Chat, user: User) -> None:
             "user_language": get_language(chat),
         }
     )
-    await chat.send_text(unsubscribed_message_reply, get_unsubscribe(chat))
+    await chat.send_text(unsubscribed_message_reply, get_subscribe(chat))
 
 
 async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:

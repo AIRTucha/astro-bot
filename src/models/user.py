@@ -11,6 +11,8 @@ class User(Base):
     name: Mapped[str] = mapped_column(String(60), nullable=False)
     date_of_birth_text: Mapped[str] = mapped_column(String(60), nullable=True)
 
+    language: Mapped[str] = mapped_column(String(2), default="en")
+
     daily_forecast: Mapped[bool] = mapped_column(Boolean, default=False)
 
     daily_forecasts = relationship(
