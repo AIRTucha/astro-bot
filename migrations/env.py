@@ -7,13 +7,16 @@ from alembic import context
 
 from src.models.base import Base
 
+from os import environ
+
+
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
 
 config.set_main_option(
     "sqlalchemy.url",
-    "postgresql+psycopg2://postgres:local_password@0.0.0.0:5432/astro-db",
+    environ.ge("DATABASE_URL"),
 )
 
 

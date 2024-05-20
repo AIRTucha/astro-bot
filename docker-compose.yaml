@@ -26,6 +26,8 @@ services:
       target: development
     depends_on:
       - db
+    environment:
+      - DATABASE_URL=postgresql+psycopg2://postgres:local_password@db:5432/astro-db
     restart: "no"
     ports:
       - "8000:8000"
