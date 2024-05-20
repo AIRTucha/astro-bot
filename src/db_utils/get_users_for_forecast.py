@@ -23,5 +23,6 @@ async def get_users_for_forecast(
             recent_forecast_subquery, User.id == recent_forecast_subquery.c.user_id
         )
         .filter(recent_forecast_subquery.c.user_id.is_(None))
+        .limit(10)
         .all()
     )

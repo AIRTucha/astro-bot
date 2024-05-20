@@ -1,5 +1,5 @@
 # Use an official Python runtime as a parent image
-FROM python:3.10.5-slim-buster as base
+FROM python:3.11.9-slim as base
 
 # Set environment varibles
 ENV PYTHONDONTWRITEBYTECODE 1

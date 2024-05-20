@@ -1,4 +1,3 @@
-from telegram import Update
 from telegram.ext import (
     Application,
     CommandHandler,
@@ -14,6 +13,8 @@ from sqlalchemy.orm import Session
 from src.db_utils.get_users_for_forecast import get_users_for_forecast
 from src.bot_utils.bot_chat import BotChat
 from src.bot_utils.send_daily_forecast import send_daily_forecast
+
+import asyncio
 
 
 class Bot:
@@ -48,9 +49,14 @@ class Bot:
 
     async def send_daily_forecast(self):
         with Session(engine) as session:
-            users = await get_users_for_forecast(session)
-            for user in users:
-                logger.info("Sending daily forecast to user %s", user.name)
-                botChat = BotChat(self.application.bot, user)
+            while True:
+                users = await get_users_for_forecast(session)
+                if len(users) == 0:
+                    logger.info("All forecasts sent for today. Exiting...")
+                    break
+                async with asyncio.TaskGroup() as tg:
+                    for user in users:
+                        logger.info("Sending daily forecast to user %s", user.name)
+                        botChat = BotChat(self.application.bot, user)
 
-                await send_daily_forecast(user, botChat)
+                        tg.create_task(send_daily_forecast(user, botChat))
