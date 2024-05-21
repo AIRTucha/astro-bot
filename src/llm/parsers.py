@@ -1,6 +1,7 @@
 from typing import Optional
 from langchain.output_parsers import PydanticOutputParser
-from langchain.pydantic_v1 import BaseModel, Field
+
+from pydantic import BaseModel, Field  # <-- Uses v1 namespace
 
 
 class BirthDayValidation(BaseModel):

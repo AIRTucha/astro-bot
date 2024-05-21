@@ -25,7 +25,9 @@ class BotChat(Chat):
 
     async def send_text(self, text: str, *button_texts: str) -> None:
         if len(button_texts) == 0:
-            await self.bot.send_message(text, reply_markup=ReplyKeyboardRemove())
+            await self.bot.send_message(
+                chat_id=self.user.id, text=text, reply_markup=ReplyKeyboardRemove()
+            )
         else:
             keyboard = [[KeyboardButton(text) for text in button_texts]]
             await self.bot.send_message(

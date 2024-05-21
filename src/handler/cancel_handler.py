@@ -2,7 +2,6 @@ from telegram import Update
 from telegram.ext import (
     ContextTypes,
 )
-from ..logger.logger import logger
 from src.bot_utils.send_cancel_message import send_cancel_message
 from src.bot_utils.send_critical_error import send_critical_error
 from src.bot_utils.reply_chat import ReplyChat

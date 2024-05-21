@@ -6,8 +6,15 @@ from langchain_core.messages import BaseMessage
 from langchain_core.utils.utils import convert_to_secret_str
 
 
-model = ChatOpenAI(
+textGenModel = ChatOpenAI(
     model="gpt-3.5-turbo-0125",
+    api_key=convert_to_secret_str(
+        "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"
+    ),
+)
+
+reasoningModel = ChatOpenAI(
+    model="gpt-4o",
     api_key=convert_to_secret_str(
         "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"
     ),
@@ -15,6 +22,7 @@ model = ChatOpenAI(
 
 
 def prompt(
+    model: ChatOpenAI,
     prompt_test: str,
     partial_variables: Optional[Dict[str, Any]] = None,
 ) -> RunnableSerializable[dict[str, str], BaseMessage | Any]:

@@ -8,15 +8,15 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "3.11.9"
 python-telegram-bot = "^21.0.1"
-langchain = "^0.1.13"
-langchain-core = "^0.1.33"
-langchain-community = "^0.0.29"
-langchain-openai = "^0.1.1"
 psycopg2-binary = "^2.9.9"
 sqlalchemy = "^2.0.29"
-mypy = "^1.10.0"
 types-psycopg2 = "^2.9.21.20240417"
 fastapi = "^0.111.0"
+langchain = "^0.2.0"
+langchain-core = "^0.2.0"
+langchain-community = "^0.2.0"
+langchain-openai = "^0.1.7"
+mypy = "1.9.0"
 
 [build-system]
 requires = ["poetry-core"]
