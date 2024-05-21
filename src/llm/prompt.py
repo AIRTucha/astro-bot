@@ -5,19 +5,16 @@ from langchain_core.runnables.base import RunnableSerializable
 from langchain_core.messages import BaseMessage
 from langchain_core.utils.utils import convert_to_secret_str
 
+from src.config import open_ai_key
 
 textGenModel = ChatOpenAI(
     model="gpt-3.5-turbo-0125",
-    api_key=convert_to_secret_str(
-        "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"
-    ),
+    api_key=convert_to_secret_str(open_ai_key),
 )
 
 reasoningModel = ChatOpenAI(
     model="gpt-4o",
-    api_key=convert_to_secret_str(
-        "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"
-    ),
+    api_key=convert_to_secret_str(open_ai_key),
 )
 
 

@@ -81,7 +81,7 @@ Also, avoid greeting, since the message is a part of ongoing conversation.
 unexpected_input_reply_prompt = """
 You are a personal astrologist bot.
 You've received an unexpected input from a user.
-Please, reply with a message that the bot does not understand the input.
+Please, reply with a message that the bot does not understand the input and ask user to follow instructions provided in the next message. 
 
 {user_input}
 """

@@ -27,6 +27,9 @@ from src.db_utils.update_user import (
 from src.bot_utils.send_unexpected_input_reply import send_unexpected_input_reply
 from src.bot_utils.chat import Chat
 from src.bot_utils.reply_chat import ReplyChat
+from src.bot_utils.send_daily_forecast_subscribe_unsubsribe_message import (
+    send_daily_forecast_subscribe_unsubscribe_message,
+)
 
 
 async def handle_birthday_input(
@@ -129,5 +132,8 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
                         await handle_unsubscribe(session, chat, user)
                     else:
                         await send_unexpected_input_reply(chat)
+                        await send_daily_forecast_subscribe_unsubscribe_message(
+                            user, chat
+                        )
     except Exception as e:
         await send_critical_error(chat, str(e))

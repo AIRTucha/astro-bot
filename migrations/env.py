@@ -7,7 +7,7 @@ from alembic import context
 
 from src.models.base import Base
 
-from os import environ
+from src.config import database_url
 
 
 # this is the Alembic Config object, which provides
@@ -16,7 +16,7 @@ config = context.config
 
 config.set_main_option(
     "sqlalchemy.url",
-    environ.ge("DATABASE_URL"),
+    database_url,
 )
 
 

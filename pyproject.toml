@@ -17,6 +17,7 @@ langchain-core = "^0.2.0"
 langchain-community = "^0.2.0"
 langchain-openai = "^0.1.7"
 mypy = "1.9.0"
+python-dotenv = "^1.0.1"
 
 [build-system]
 requires = ["poetry-core"]

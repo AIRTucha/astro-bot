@@ -1,12 +1,12 @@
 from src.start_bot import Bot
 
-# from typing import Union
-
 from fastapi import FastAPI
 
 from contextlib import asynccontextmanager
 
-bot = Bot("7189953918:AAEHKCoCuYW62FLZPt2lC1VqE_h0MaBKCaQ")
+from src.config import tg_bot_token
+
+bot = Bot(tg_bot_token)
 
 
 @asynccontextmanager

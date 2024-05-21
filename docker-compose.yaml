@@ -27,7 +27,7 @@ services:
     depends_on:
       - db
     environment:
-      - DATABASE_URL=postgresql+psycopg2://postgres:local_password@db:5432/astro-db
+      - ENV_NAME=dev
     restart: "no"
     ports:
       - "8000:8000"
