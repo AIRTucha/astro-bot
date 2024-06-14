@@ -1,30 +1,48 @@
 from src.bot_utils.chat import Chat
 
 from src.logger.logger import logger
-from telegram import Update, ReplyKeyboardRemove, ReplyKeyboardMarkup, KeyboardButton
+from telegram import (
+    Update,
+    ReplyKeyboardRemove,
+    ReplyKeyboardMarkup,
+    KeyboardButton,
+    User,
+)
+
+
+def format_name(user: User | None) -> str:
+    user_name = ""
+
+    if user.first_name is not None:
+        user_name += user.first_name
+
+    if user.last_name is not None:
+        user_name += f" {user.last_name}"
+
+    if user_name == "":
+        user_name = user.username
+
+    return user_name
 
 
 class ReplyChat(Chat):
     def __init__(self, update: Update):
-        update._bot
         if (
             update.message is None
             or update.message.from_user is None
-            or update.message.from_user.first_name is None
-            or update.message.from_user.last_name is None
             or update.message.from_user.id is None
             or update.message.from_user.language_code is None
         ):
             logger.error("Update message is malformed %v", update.to_dict())
             raise ValueError("Update message is malformed")
-        self.first_name = update.message.from_user.first_name
-        self.last_name = update.message.from_user.last_name
+        update.message.from_user.username
+        self.user_name = format_name(update.message.from_user)
         self.id = update.message.from_user.id
         self.language = update.message.from_user.language_code
         self.message = update.message
 
     def get_user_name(self) -> str:
-        return f"{self.first_name} {self.last_name}"
+        return self.user_name
 
     def get_language_code(self) -> str:
         return self.language

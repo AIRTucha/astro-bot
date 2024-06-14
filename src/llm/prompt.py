@@ -4,8 +4,12 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables.base import RunnableSerializable
 from langchain_core.messages import BaseMessage
 from langchain_core.utils.utils import convert_to_secret_str
+import os
 
-from src.config import open_ai_key
+open_ai_key = os.getenv("OPEN_AI_KEY")
+
+if open_ai_key is None:
+    raise ValueError("OPEN_AI_KEY is not set")
 
 textGenModel = ChatOpenAI(
     model="gpt-3.5-turbo-0125",

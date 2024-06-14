@@ -1,8 +1,9 @@
 from sqlalchemy import create_engine
-import psycopg2
+
+import os
 
 engine = create_engine(
-    "postgresql+psycopg2://postgres:local_password@db/astro-db",
+    os.getenv("DATABASE_URL"),
     echo=False,
     connect_args={"connect_timeout": 10},
 )

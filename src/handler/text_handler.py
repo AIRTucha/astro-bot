@@ -65,6 +65,7 @@ async def handle_birthday_input(
             reply.birthday_text,
         )
         update_user_birthday(session, user, reply.birthday_text)
+        logger.info("User %s birthday updated as %s", user_id, reply.birthday_text)
         await send_daily_forecast(user, chat)
 
 
@@ -114,6 +115,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
                 await handle_start(update, context)
             else:
                 if user.date_of_birth_text is None:
+                    logger.info("Birthday input %s", user_id)
                     await handle_birthday_input(session, user, chat)
                 else:
                     if is_message_subscribe(chat):

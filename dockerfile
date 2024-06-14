@@ -19,22 +19,22 @@ WORKDIR /app
 
 COPY poetry.lock .
 COPY pyproject.toml .
-COPY *.env .
 
 RUN poetry config virtualenvs.create false \
     && poetry install --no-interaction --no-ansi
 
 
-FROM base as development
+FROM base as dev
 
-# CMD ["python", "main.py"]
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--reload"]
 
 
-FROM base as production
+FROM base as prod
+
+COPY cert/ ../root/
 
 # Copy the current directory contents into the container at /app
 COPY . .
 
 # Run the command to start your application
-CMD ["python", "main.py"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]

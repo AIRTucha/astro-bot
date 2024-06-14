@@ -11,6 +11,7 @@ from src.models.engine import engine
 from sqlalchemy.orm import Session
 from src.db_utils.get_last_daily_forecasts import get_last_forecasts
 from src.models.daily_forecast import DailyForecast
+from src.logger.logger import logger
 from typing import List
 
 from src.bot_utils.chat import Chat
@@ -38,7 +39,7 @@ async def send_daily_forecast(user: User, chat: Chat) -> None:
     user_language = get_language(chat)
     with Session(engine) as session:
         last_forecasts = get_last_forecasts(session, user.id, 3)
-
+        logger.info("User %s forecast requested", user.id)
         prediction = prediction_chain.invoke(
             {
                 "user_name": user_name,
@@ -47,7 +48,8 @@ async def send_daily_forecast(user: User, chat: Chat) -> None:
                 "previous_predictions": format_last_forecasts(last_forecasts),
             }
         )
+        logger.info("User %s forecast received", user.id)
         add_daily_forecast(session, user.id, prediction)
-
+        logger.info("User %s forecast sent", user.id)
         await chat.send_text(prediction, get_subscribe(chat))
         await send_daily_forecast_subscribe_unsubscribe_message(user, chat)

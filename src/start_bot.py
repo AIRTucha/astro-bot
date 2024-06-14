@@ -1,3 +1,7 @@
+from http import HTTPStatus
+from typing import Any
+from fastapi import Response
+from telegram import Update
 from telegram.ext import (
     Application,
     CommandHandler,
@@ -14,7 +18,12 @@ from src.db_utils.get_users_for_forecast import get_users_for_forecast
 from src.bot_utils.bot_chat import BotChat
 from src.bot_utils.send_daily_forecast import send_daily_forecast
 
+import os
 import asyncio
+
+
+async def error_handler(update: Update) -> None:
+    logger.error("Update %s caused error %s", update.to_dict())
 
 
 class Bot:
@@ -35,15 +44,22 @@ class Bot:
             MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text)
         )
         self.application.add_handler(CommandHandler("cancel", handle_cancel))
+        self.application.add_error_handler(error_handler)
 
         await self.application.initialize()
         await self.application.start()
-        await self.application.updater.start_polling()
 
-        # await self.application.bot.send_https://scontent.ffra2-1.fna.fbcdn.net/v/t39.30808-6/440389240_857552689750682_6349401513829990214_n.jpg?_nc_cat=1&ccb=1-7&_nc_sid=5f2048&_nc_ohc=JsGFdY6t_BcQ7kNvgEmA-zy&_nc_ht=scontent.ffra2-1.fna&oh=00_AYD4X320t3o9xoiHc9YziBW_0oeMMwDquOZS1g-mLrZT5g&oe=66443E52message(chat_id=63033311, text="Bot started!")
+        if os.getenv("WEBHOOK_ENABLED") != "true":
+            await self.application.updater.start_polling()
+        else:
+            logger.info("Setting webhook")
+            await self.application.bot.set_webhook(
+                "https://backend-fb37jnmkpa-ez.a.run.app/tg_webhook"
+            )
 
     async def stop(self):
-        await self.application.updater.stop()
+        if os.getenv("WEBHOOK_ENABLED") != "true":
+            await self.application.updater.stop()
         await self.application.stop()
         await self.application.shutdown()
 
@@ -60,3 +76,8 @@ class Bot:
                         botChat = BotChat(self.application.bot, user)
 
                         tg.create_task(send_daily_forecast(user, botChat))
+
+    async def process_update(self, update: Any) -> Response:
+        update = Update.de_json(update, self.application.bot)
+        await self.application.process_update(update)
+        return Response(status_code=HTTPStatus.OK)

@@ -46,7 +46,35 @@ If you do not find readable birthday information, please provide a message in ex
 
 prediction_prompt = """
 You are a personal astrologist bot.
-Please, astrological prediction for {user_name} with {birth_day}, return just prediction text, 10 sentence max.
+Please, astrological prediction for {user_name} with {birth_day}, return just prediction text, 5 sentence max.
+
+Cover one of the following topics:
+- Love
+- Career
+- Health
+- Money
+- Travel
+- Family
+- Friends
+- Mood
+- Energy
+- Creativity
+- Productivity
+- Focus
+- Communication
+- Learning
+- Growth
+- Spirituality
+- Fun
+- Relaxation
+- Adventure
+- Socializing
+- Activity
+- Rest
+
+Please, do not repeat the topic of the previous prediction. Do not mention the topic in the prediction text.
+
+Previous predictions:
 
 {previous_predictions}
 """
