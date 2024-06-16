@@ -10,8 +10,7 @@ from .prompts import (
     translate_system_error_prompt,
     subscribed_prompt,
     unsubscribed_prompt,
-    daily_forecast_subscribe_inquiry_prompt,
-    daily_forecast_unsubscribe_inquiry_prompt,
+    command_explanation_prompt,
     unexpected_input_reply_prompt,
 )
 from .parsers import birth_day_parser
@@ -22,12 +21,8 @@ welcome_chain = prompt(textGenModel, welcome_prompt) | StrOutputParser()
 
 welcome_again_chain = prompt(textGenModel, welcome_again_prompt) | StrOutputParser()
 
-daily_forecast_subscribe_inquiry_chain = (
-    prompt(textGenModel, daily_forecast_subscribe_inquiry_prompt) | StrOutputParser()
-)
-
-daily_forecast_unsubscribe_inquiry_chain = (
-    prompt(textGenModel, daily_forecast_unsubscribe_inquiry_prompt) | StrOutputParser()
+command_explanation_chain = (
+    prompt(textGenModel, command_explanation_prompt) | StrOutputParser()
 )
 
 parse_birthday_chain = (
@@ -57,14 +52,6 @@ translate_system_error_chain = (
 subscribed_chain = prompt(textGenModel, subscribed_prompt) | StrOutputParser()
 
 unsubscribed_chain = prompt(textGenModel, unsubscribed_prompt) | StrOutputParser()
-
-daily_forecast_subscribe_inquiry_chain = (
-    prompt(textGenModel, daily_forecast_subscribe_inquiry_prompt) | StrOutputParser()
-)
-
-daily_forecast_unsubscribe_inquiry_chain = (
-    prompt(textGenModel, daily_forecast_unsubscribe_inquiry_prompt) | StrOutputParser()
-)
 
 unexpected_input_reply_chain = (
     prompt(textGenModel, unexpected_input_reply_prompt) | StrOutputParser()

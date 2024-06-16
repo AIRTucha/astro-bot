@@ -13,6 +13,9 @@ from telegram import (
 def format_name(user: User | None) -> str:
     user_name = ""
 
+    if user is None:
+        return "Unknown User"
+
     if user.first_name is not None:
         user_name += user.first_name
 
@@ -20,7 +23,10 @@ def format_name(user: User | None) -> str:
         user_name += f" {user.last_name}"
 
     if user_name == "":
-        user_name = user.username
+        if user.username is not None:
+            user_name = user.username
+        else:
+            user_name = "Unknown User"
 
     return user_name
 

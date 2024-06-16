@@ -12,7 +12,9 @@ from src.bot_utils.send_welcome_message import (
     send_welcome_again_message,
 )
 from src.bot_utils.send_critical_error import send_critical_error
-from src.bot_utils.chat import Chat
+from src.bot_utils.send_command_explanation_message import (
+    send_command_explanation_message,
+)
 
 from src.bot_utils.reply_chat import ReplyChat
 
@@ -32,5 +34,7 @@ async def handle_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
                 await send_welcome_message(chat)
             else:
                 await send_welcome_again_message(user, chat)
+                await send_command_explanation_message(chat)
+
     except Exception as e:
         await send_critical_error(chat, str(e))

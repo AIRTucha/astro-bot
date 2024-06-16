@@ -11,6 +11,8 @@ from telegram.ext import (
 from src.handler.cancel_handler import handle_cancel
 from src.handler.start_handler import handle_start
 from src.handler.text_handler import handle_text
+from src.handler.subscribe_handler import subscribe_handler
+from src.handler.unsubscribe_handler import unsubscribe_handler
 from src.logger.logger import logger
 from src.models.engine import engine
 from sqlalchemy.orm import Session
@@ -40,6 +42,9 @@ class Bot:
     async def start(self):
 
         self.application.add_handler(CommandHandler("start", handle_start))
+        self.application.add_handler(CommandHandler("subscribe", subscribe_handler))
+        self.application.add_handler(CommandHandler("unsubscribe", unsubscribe_handler))
+
         self.application.add_handler(
             MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text)
         )

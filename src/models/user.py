@@ -13,7 +13,7 @@ class User(Base):
 
     language: Mapped[str] = mapped_column(String(2), default="en")
 
-    daily_forecast: Mapped[bool] = mapped_column(Boolean, default=False)
+    daily_forecast: Mapped[bool] = mapped_column(Boolean, default=True)
 
     daily_forecasts = relationship(
         "DailyForecast", back_populates="user", cascade="all, delete-orphan"

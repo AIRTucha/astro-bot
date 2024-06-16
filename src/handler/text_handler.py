@@ -4,8 +4,6 @@ from telegram.ext import (
 )
 from src.llm.chains import (
     parse_birthday_chain,
-    subscribed_chain,
-    unsubscribed_chain,
 )
 from ..logger.logger import logger
 
@@ -18,18 +16,20 @@ from src.db_utils.update_user import update_user_birthday
 from src.db_utils.get_user import get_user_from_chat
 from src.bot_utils.language import get_language, get_subscribe, get_unsubscribe
 from src.bot_utils.send_critical_error import send_critical_error
+from src.bot_utils.send_command_explanation_message import (
+    send_command_explanation_message,
+)
 from src.models.user import User
 from src.db_utils.update_user import (
     update_user_birthday,
-    update_user_daily_forecast_subscription,
 )
 
 from src.bot_utils.send_unexpected_input_reply import send_unexpected_input_reply
 from src.bot_utils.chat import Chat
 from src.bot_utils.reply_chat import ReplyChat
-from src.bot_utils.send_daily_forecast_subscribe_unsubsribe_message import (
-    send_daily_forecast_subscribe_unsubscribe_message,
-)
+
+from src.handler.subscribe_handler import handle_subscribe
+from src.handler.unsubscribe_handler import handle_unsubscribe
 
 
 async def handle_birthday_input(
@@ -67,6 +67,7 @@ async def handle_birthday_input(
         update_user_birthday(session, user, reply.birthday_text)
         logger.info("User %s birthday updated as %s", user_id, reply.birthday_text)
         await send_daily_forecast(user, chat)
+        await send_command_explanation_message(chat)
 
 
 def is_message_subscribe(chat: Chat) -> bool:
@@ -75,30 +76,6 @@ def is_message_subscribe(chat: Chat) -> bool:
 
 def is_message_unsubscribe(chat: Chat) -> bool:
     return get_unsubscribe(chat).lower() == chat.get_message_text().lower()
-
-
-async def handle_subscribe(session: Session, chat: Chat, user: User) -> None:
-    user_name = chat.get_user_name()
-    user_language = get_language(chat)
-    update_user_daily_forecast_subscription(session, user.id, True)
-    subscribed_message_reply = subscribed_chain.invoke(
-        {
-            "user_name": user_name,
-            "user_language": user_language,
-        }
-    )
-    await chat.send_text(subscribed_message_reply, get_unsubscribe(chat))
-
-
-async def handle_unsubscribe(session: Session, chat: Chat, user: User) -> None:
-    update_user_daily_forecast_subscription(session, user.id, False)
-    unsubscribed_message_reply = unsubscribed_chain.invoke(
-        {
-            "user_name": user.name,
-            "user_language": get_language(chat),
-        }
-    )
-    await chat.send_text(unsubscribed_message_reply, get_subscribe(chat))
 
 
 async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -134,8 +111,5 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
                         await handle_unsubscribe(session, chat, user)
                     else:
                         await send_unexpected_input_reply(chat)
-                        await send_daily_forecast_subscribe_unsubscribe_message(
-                            user, chat
-                        )
     except Exception as e:
         await send_critical_error(chat, str(e))

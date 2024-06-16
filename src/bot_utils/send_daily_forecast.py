@@ -1,11 +1,6 @@
-from telegram import ReplyKeyboardMarkup, KeyboardButton, Update
-
 from src.llm.chains import prediction_chain
 from src.models.user import User
-from src.bot_utils.send_daily_forecast_subscribe_unsubsribe_message import (
-    send_daily_forecast_subscribe_unsubscribe_message,
-)
-from src.bot_utils.language import get_language, get_subscribe
+from src.bot_utils.language import get_language
 from src.db_utils.add_daily_forecast import add_daily_forecast
 from src.models.engine import engine
 from sqlalchemy.orm import Session
@@ -51,5 +46,4 @@ async def send_daily_forecast(user: User, chat: Chat) -> None:
         logger.info("User %s forecast received", user.id)
         add_daily_forecast(session, user.id, prediction)
         logger.info("User %s forecast sent", user.id)
-        await chat.send_text(prediction, get_subscribe(chat))
-        await send_daily_forecast_subscribe_unsubscribe_message(user, chat)
+        await chat.send_text(prediction)

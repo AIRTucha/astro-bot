@@ -33,10 +33,10 @@ async def send_daily_forecast():
 
 
 @app.post("/ready")
-async def send_daily_forecast():
+async def ready():
     return {"status": "ready"}
 
 
 @app.post("/health")
-async def send_daily_forecast():
+async def health():
     return {"status": "ok"}
