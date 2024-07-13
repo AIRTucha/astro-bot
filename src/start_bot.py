@@ -19,13 +19,19 @@ from sqlalchemy.orm import Session
 from src.db_utils.get_users_for_forecast import get_users_for_forecast
 from src.bot_utils.bot_chat import BotChat
 from src.bot_utils.send_daily_forecast import send_daily_forecast
-
+from src.handler.stop_handler import stop_handler
+from telegram.ext import (
+    ContextTypes,
+)
 import os
 import asyncio
 
 
-async def error_handler(update: Update) -> None:
-    logger.error("Update %s caused error %s", update.to_dict())
+async def error_handler(update: Update, context: ContextTypes) -> None:
+    logger.error(
+        "Update %s caused error %s",
+        update.to_json(),
+    )
 
 
 class Bot:
@@ -44,11 +50,13 @@ class Bot:
         self.application.add_handler(CommandHandler("start", handle_start))
         self.application.add_handler(CommandHandler("subscribe", subscribe_handler))
         self.application.add_handler(CommandHandler("unsubscribe", unsubscribe_handler))
+        self.application.add_handler(CommandHandler("stop", stop_handler))
+        self.application.add_handler(CommandHandler("cancel", stop_handler))
 
         self.application.add_handler(
             MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text)
         )
-        self.application.add_handler(CommandHandler("cancel", handle_cancel))
+        # self.application.add_handler(CommandHandler("cancel", handle_cancel))
         self.application.add_error_handler(error_handler)
 
         await self.application.initialize()

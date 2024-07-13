@@ -11,8 +11,7 @@ from src.models.engine import engine
 from src.models.user import User
 from sqlalchemy.orm import Session
 from src.db_utils.get_user import get_user_from_chat
-from src.bot_utils.language import get_language, get_subscribe
-from src.bot_utils.send_critical_error import send_critical_error
+from src.bot_utils.language import get_language
 from src.models.user import User
 from src.db_utils.update_user import (
     update_user_daily_forecast_subscription,
@@ -20,6 +19,7 @@ from src.db_utils.update_user import (
 
 from src.bot_utils.chat import Chat
 from src.bot_utils.reply_chat import ReplyChat
+from src.db_utils.create_user import create_user
 
 
 async def unsubscribe_handler(update: Update, context: ContextTypes) -> None:
@@ -28,10 +28,11 @@ async def unsubscribe_handler(update: Update, context: ContextTypes) -> None:
     with Session(engine) as session:
         user = get_user_from_chat(session, chat)
         if user is None:
-            await send_critical_error(chat, "User not found")
+            create_user(session, chat)
+            await unsubscribe_handler(update, context)
             return
         await handle_unsubscribe(session, chat, user)
-    logger.info("User %s unsubscribed", user.id)
+        logger.info("User %s unsubscribed", user.id)
 
 
 async def handle_unsubscribe(session: Session, chat: Chat, user: User) -> None:
@@ -42,4 +43,4 @@ async def handle_unsubscribe(session: Session, chat: Chat, user: User) -> None:
             "user_language": get_language(chat),
         }
     )
-    await chat.send_text(unsubscribed_message_reply, get_subscribe(chat))
+    await chat.send_text(unsubscribed_message_reply)
