@@ -1,4 +1,4 @@
-from src.start_bot import Bot
+from astrogpt.start_bot import Bot
 
 from fastapi import FastAPI, Request
 

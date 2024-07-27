@@ -5,4 +5,5 @@ poetry run alembic upgrade head
 poetry run alembic downgrade -1
 poetry run alembic revision -m "Create trigger on students table"
 
-curl --create-dirs -o $HOME/.postgresql/root.crt 'https://cockroachlabs.cloud/clusters/776aed44-bf61-4eb0-8b8d-de9f3affb84d/cert'
+
+export DATABASE_URL=postgresql+psycopg2://postgres:local_password@localhost:5432/astro-db
