@@ -12,8 +12,9 @@ from .prompts import (
     unsubscribed_prompt,
     command_explanation_prompt,
     unexpected_input_reply_prompt,
+    menu_prompt,
 )
-from .parsers import birth_day_parser
+from .parsers import birth_day_parser, menu_decision_parser
 from astrogpt.llm.prompt import prompt, textGenModel, reasoningModel
 
 
@@ -34,6 +35,17 @@ parse_birthday_chain = (
         },
     )
     | birth_day_parser
+)
+
+menu_chain = (
+    prompt(
+        reasoningModel,
+        menu_prompt,
+        partial_variables={
+            "format_instructions": menu_decision_parser.get_format_instructions()
+        },
+    )
+    | menu_decision_parser
 )
 
 

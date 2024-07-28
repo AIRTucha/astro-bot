@@ -22,3 +22,6 @@ class Message(Base):
 
     def __repr__(self):
         return f"id: {self.id}, message: {self.forecast_text}, user_id: {self.user_id}"
+    
+    def __str__(self):
+        return f'{self.created_at} {'User' if self.from_user else 'Bot'}: {self.text}'

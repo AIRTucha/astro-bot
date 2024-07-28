@@ -1,4 +1,5 @@
 from .base import Base
+from typing import Optional
 
 from sqlalchemy import String, BigInteger, Boolean
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -11,7 +12,7 @@ class User(Base):
     name: Mapped[str] = mapped_column(String(60), nullable=False)
     date_of_birth_text: Mapped[str] = mapped_column(String(60), nullable=True)
 
-    language: Mapped[str] = mapped_column(String(2), default="en")
+    language: Mapped[Optional[str]] = mapped_column(String(2), default="en")
 
     daily_forecast: Mapped[bool] = mapped_column(Boolean, default=True)
 
@@ -24,4 +25,4 @@ class User(Base):
     )
 
     def __repr__(self):
-        return f"id: {self.id}, name: {self.name}, date_of_birth: {self.dateOfBirth}, language: {self.language}"
+        return f"id: {self.id}, name: {self.name}, date_of_birth_text: {self.date_of_birth_text}, language: {self.language}"

@@ -41,7 +41,7 @@ class ReplyChat(Chat):
         ):
             logger.error("Update message is malformed %v", update.to_dict())
             raise ValueError("Update message is malformed")
-        update.message.from_user.username
+
         self.user_name = format_name(update.message.from_user)
         self.id = update.message.from_user.id
         self.language = update.message.from_user.language_code
