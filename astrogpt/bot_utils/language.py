@@ -183,7 +183,7 @@ _languages = {
     # "tk": "Turkmen",
     # "tw": "Twi",
     # "ug": "Uighur, Uyghur",
-    "uk": "Ukrainian",
+    "ua": "Ukrainian",
     "ur": "Urdu",
     "uz": "Uzbek",
     # "ve": "Venda",
@@ -198,6 +198,8 @@ _languages = {
     # "za": "Zhuang, Chuang",
     # "zu": "Zulu",
 }
+
+lang_codes = {value: key for key, value in _languages.items()}
 
 
 get_language = partial(_get_translation, _languages)

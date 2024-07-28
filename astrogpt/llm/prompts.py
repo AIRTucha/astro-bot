@@ -38,6 +38,27 @@ If you do not find readable birthday information, please provide a message in ex
 </output_formatting_guidelines>
 """
 
+parse_user_language_prompt = """
+<instruction>
+Please, analyze the following text inside of text_input tag and extract information regarding desired language option of the user in text format.
+
+Format output according to instructions in output_formatting_guidelines tag.
+</instruction>
+
+<text_input>
+{user_input}
+</text_input>
+
+<supported_languages>
+{supported_languages}
+</supported_languages>
+
+<output_formatting_guidelines>
+Format you reply according to {format_instructions}
+If you do not find readable language information, or the language is not supported, please provide a message in extractionError which clarify the issue.
+</output_formatting_guidelines>
+"""
+
 prediction_prompt = """
 You are a personal astrologist bot.
 Please, daily astrological prediction for {user_name} with {birth_day}, return just prediction text, 7 sentence max.
@@ -118,12 +139,15 @@ You are a personal astrologist bot. You should handle a user input.
 You support following actions:
 
 - Update user birthday, even if it is already provided
+- Update user language, even if it is already provided
 - Subscribe to daily forecast
 - Unsubscribe from daily forecast
 - Ask user for input if any action failed
 - Ask user for input if any request is unclear
 - Send message to user if user goal is achieved
 - Provide user with an information regarding service you can provide
+- You can also provide information about users state e.g. date of birth, language, subscription status
+- Do not provide predictions if user asks, tell user if he/she is subscribed to daily forecast and prompt to subscribe if not
 
 You do not support any other actions. 
 Provide user with kinda and clear feedback on service your can provide.
@@ -153,6 +177,7 @@ output_formatting_guidelines tag contains instructions on how to format your rep
 User name: {user_name}
 User birthday: {user_birthday}
 User subscription: {user_subscription}
+User language: {user_language}
 </user_information>
 
 <last_user_input>
@@ -193,6 +218,7 @@ Reply with a message that summarizes actions taken and results of those actions.
 Omit intermediate steps and provide only final results.
 Do no explain the actions taken, just provide the feedback in a clear and concise conversation manner.
 Do no greet user, since the message is a part of ongoing conversation.
+You should not provide user with any additional information or forecast beyond the actions taken.
 Please, be brief and use chat style language, avoid mentioning details of decision making process. 
 Consider messages from previous_conversation tag.
 </output_formatting_guidelines>

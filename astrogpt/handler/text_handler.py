@@ -55,29 +55,11 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
                 logger.info("User does to exist %s", user_id)
                 await handle_start(update, context)
             else:
+                chat.refresh_state(session)
                 if user.date_of_birth_text is None:
                     logger.info("Birthday input %s", user_id)
                     await handle_birthday_input(session, user, chat)
                 else:
-                    # if is_message_subscribe(chat):
-                    #     logger.info(
-                    #         "User subscribed %s %s",
-                    #         user_id,
-                    #         user.daily_forecast,
-                    #     )
-                    #     await handle_subscribe(session, chat, user)
-                    # elif is_message_unsubscribe(chat):
-                    #     logger.info(
-                    #         "User unsubscribed %s %s",
-                    #         user_id,
-                    #         user.daily_forecast,
-                    #     )
-                    #     await handle_unsubscribe(session, chat, user)
-                    # else:
-                    #     await send_unexpected_input_reply(chat)
-
-                    # messages = get_messages(session, user)
-
                     await handle_menu_with_llm(chat, user, session)
 
     except Exception as e:

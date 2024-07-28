@@ -20,12 +20,12 @@ if open_ai_key is None:
     raise ValueError("OPEN_AI_KEY is not set")
 
 textGenModel = ChatOpenAI(
-    model="gpt-3.5-turbo-0125",
+    model="gpt-4o-mini",
     api_key=convert_to_secret_str(open_ai_key),
 )
 
 reasoningModel = ChatOpenAI(
-    model="gpt-4o",
+    model="gpt-4o-mini",
     api_key=convert_to_secret_str(open_ai_key),
     verbose=True,
 )

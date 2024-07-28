@@ -8,6 +8,8 @@ from telegram import (
     KeyboardButton,
     User,
 )
+from sqlalchemy.orm import Session
+from astrogpt.db_utils.get_user import get_user
 
 
 def format_name(user: User | None) -> str:
@@ -46,6 +48,13 @@ class ReplyChat(Chat):
         self.id = update.message.from_user.id
         self.language = update.message.from_user.language_code
         self.message = update.message
+
+    def refresh_state(self, session: Session) -> None:
+        user = get_user(session, self.id)
+
+        if not (user is None):
+            self.user_name = user.name
+            self.language = user.language
 
     def get_user_name(self) -> str:
         return self.user_name

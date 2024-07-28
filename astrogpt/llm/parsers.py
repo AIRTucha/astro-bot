@@ -15,8 +15,21 @@ class BirthDayValidation(BaseModel):
 birth_day_parser = PydanticOutputParser(pydantic_object=BirthDayValidation)
 
 
+class UserLanguageValidation(BaseModel):
+    language: str = Field(
+        description="Desired language option of the user. Convert it to single English word like in list of supported languages"
+    )
+    extraction_error: Optional[str] = Field(
+        description="An error explaining why the language could not be extracted"
+    )
+
+
+user_language_parser = PydanticOutputParser(pydantic_object=UserLanguageValidation)
+
+
 class Decision(str, Enum):
     update_birth_day = "update_birthday"
+    update_language = "update_language"
     subscribe = "subscribe"
     unsubscribe = "unsubscribe"
     request_input_clarification = "request_input_clarification"

@@ -24,6 +24,7 @@ from astrogpt.bot_utils.language import get_language
 from dataclasses import dataclass
 from astrogpt.bot_utils.send_reply_to_user import send_reply_to_user
 from astrogpt.db_utils.add_message import add_message
+from astrogpt.handler.handle_user_language_input import handle_prase_user_language
 
 
 @dataclass
@@ -75,7 +76,7 @@ async def handle_menu_with_llm(
             user_id,
             reply.decision,
             reply.decision_details,
-            previous_actions_str,
+            previous_conversation,
         )
 
         previous_actions.append(reply)
@@ -91,6 +92,23 @@ async def handle_menu_with_llm(
                 previous_actions.append(
                     ActionResult(
                         action="Update birthday", result="Failed due to " + str(e)
+                    )
+                )
+
+        elif reply.decision == Decision.update_language:
+            try:
+                await handle_prase_user_language(session, user, chat)
+                previous_actions.append(
+                    ActionResult(
+                        action="Update language", result="Updated Successfully"
+                    )
+                )
+                chat.refresh_state(session)
+                user_language = get_language(chat)
+            except Exception as e:
+                previous_actions.append(
+                    ActionResult(
+                        action="Update language", result="Failed due to " + str(e)
                     )
                 )
 

@@ -11,6 +11,14 @@ def update_user_birthday(session: Session, user: User, birthday: str):
     return
 
 
+def update_user_language(session: Session, user: User, language: str):
+    stmt = update(User).where(User.id == user.id).values(language=language)
+    session.execute(stmt)
+    session.commit()
+    user.language = language
+    return
+
+
 def update_user_daily_forecast_subscription(
     session: Session, user_id: int, is_subscribed: bool
 ):
