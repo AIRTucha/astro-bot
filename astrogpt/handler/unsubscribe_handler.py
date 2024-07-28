@@ -43,4 +43,4 @@ async def handle_unsubscribe(session: Session, chat: Chat, user: User) -> None:
             "user_language": get_language(chat),
         }
     )
-    await chat.send_text(unsubscribed_message_reply)
+    # await chat.send_text(unsubscribed_message_reply)

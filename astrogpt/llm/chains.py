@@ -13,6 +13,7 @@ from .prompts import (
     command_explanation_prompt,
     unexpected_input_reply_prompt,
     menu_prompt,
+    reply_user_prompt,
 )
 from .parsers import birth_day_parser, menu_decision_parser
 from astrogpt.llm.prompt import prompt, textGenModel, reasoningModel
@@ -68,3 +69,5 @@ unsubscribed_chain = prompt(textGenModel, unsubscribed_prompt) | StrOutputParser
 unexpected_input_reply_chain = (
     prompt(textGenModel, unexpected_input_reply_prompt) | StrOutputParser()
 )
+
+reply_user_input_chain = prompt(textGenModel, reply_user_prompt) | StrOutputParser()

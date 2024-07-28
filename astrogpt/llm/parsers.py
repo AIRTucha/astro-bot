@@ -16,35 +16,21 @@ birth_day_parser = PydanticOutputParser(pydantic_object=BirthDayValidation)
 
 
 class Decision(str, Enum):
-    # finish_message_handling = "finish_message_handling"
     update_birth_day = "update_birthday"
-    send_daily_forecast = "send_daily_forecast"
     subscribe = "subscribe"
     unsubscribe = "unsubscribe"
-    unclear_user_input = "unclear_user_input"
+    request_input_clarification = "request_input_clarification"
+    send_goal_achieved = "send_goal_achieved"
 
 
 class MenuDecision(BaseModel):
     decision: Decision = Field(description="Decision for future action to take")
     decision_details: str = Field(
-        description="Provide necessary context for future action"
+        description="Provide necessary context for future action of the bot"
     )
 
     def __str__(self) -> str:
-        return f"Decision: {self.decision}, Details: {self.decision_details}"
-
-
-class HandledDecision(MenuDecision):
-    def __init__(self, menu_decision: MenuDecision, action_result: str) -> None:
-        super().__init__(
-            decision=menu_decision.decision,
-            decision_details=menu_decision.decision_details,
-        )
-
-        self.action_result = action_result
-
-    def __str__(self) -> str:
-        return f"{super().__str__()}, Action Result: {self.action_result}"
+        return f"Action: {self.decision}, Details: {self.decision_details}"
 
 
 menu_decision_parser = PydanticOutputParser(pydantic_object=MenuDecision)

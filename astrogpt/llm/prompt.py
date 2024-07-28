@@ -6,6 +6,14 @@ from langchain_core.messages import BaseMessage
 from langchain_core.utils.utils import convert_to_secret_str
 import os
 
+from ..logger.logger import logger
+import langchain
+
+from langchain.globals import set_verbose
+
+set_verbose(True)
+
+langchain.verbose = True
 open_ai_key = os.getenv("OPEN_AI_KEY")
 
 if open_ai_key is None:
@@ -19,6 +27,7 @@ textGenModel = ChatOpenAI(
 reasoningModel = ChatOpenAI(
     model="gpt-4o",
     api_key=convert_to_secret_str(open_ai_key),
+    verbose=True,
 )
 
 
@@ -27,13 +36,12 @@ def prompt(
     prompt_test: str,
     partial_variables: Optional[Dict[str, Any]] = None,
 ) -> RunnableSerializable[dict[str, str], BaseMessage | Any]:
-    return (
-        ChatPromptTemplate.from_template(
-            prompt_test + "\n\n Please, answer in {user_language}.",
-            partial_variables=partial_variables,
-        )
-        | model
+    chain_prompt = ChatPromptTemplate.from_template(
+        prompt_test + "\n\n Please, answer in {user_language}.",
+        partial_variables=partial_variables,
     )
+    # chain_prompt
+    return chain_prompt | model
 
 
 # def menuPrompt

@@ -44,4 +44,4 @@ async def handle_subscribe(session: Session, chat: Chat, user: User) -> None:
             "user_language": user_language,
         }
     )
-    await chat.send_text(subscribed_message_reply)
+    # await chat.send_text(subscribed_message_reply)
