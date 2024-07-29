@@ -58,7 +58,7 @@ async def handle_menu_with_llm(
     previous_actions: List[object] = []
     previous_actions_str = ""
 
-    while len(previous_actions) < 5:
+    while len(previous_actions) < 7:
         reply: MenuDecision = menu_chain.invoke(
             {
                 "user_name": user_name,

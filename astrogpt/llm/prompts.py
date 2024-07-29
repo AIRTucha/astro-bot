@@ -220,6 +220,6 @@ Do no explain the actions taken, just provide the feedback in a clear and concis
 Do no greet user, since the message is a part of ongoing conversation.
 You should not provide user with any additional information or forecast beyond the actions taken.
 Please, be brief and use chat style language, avoid mentioning details of decision making process. 
-Consider messages from previous_conversation tag.
+Consider messages from previous_conversation tag in your reply, but do not repeat information from them again in your reply.
 </output_formatting_guidelines>
 """

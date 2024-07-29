@@ -25,7 +25,7 @@ textGenModel = ChatOpenAI(
 )
 
 reasoningModel = ChatOpenAI(
-    model="gpt-4o-mini",
+    model="gpt-4o",
     api_key=convert_to_secret_str(open_ai_key),
     verbose=True,
 )
