@@ -10,7 +10,7 @@ from astrogpt.models.user import User
 from sqlalchemy.orm import Session
 from astrogpt.handler.start_handler import handle_start
 
-from astrogpt.handler import handle_birthday_input
+from astrogpt.handler.handle_birthday_input import handle_birthday_input
 from astrogpt.bot_utils.send_daily_forecast import send_daily_forecast
 from astrogpt.db_utils.update_user import update_user_birthday
 from astrogpt.handler.subscribe_handler import handle_subscribe
@@ -59,6 +59,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
                 if user.date_of_birth_text is None:
                     logger.info("Birthday input %s", user_id)
                     await handle_birthday_input(session, user, chat)
+                    logger.info("OK")
                 else:
                     await handle_menu_with_llm(chat, user, session)
 

@@ -20,7 +20,7 @@ Previous forecasts:
 
 def format_forecast(forecast: DailyForecast) -> str:
     date_format = "%m/%d/%Y"
-    return f"{forecast.created_at.strftime(date_format)} {forecast.forecast_text}"
+    return f"{forecast.timestamp .strftime(date_format)} {forecast.forecast_text}"
 
 
 def format_last_forecasts(forecasts: List[DailyForecast]) -> str:

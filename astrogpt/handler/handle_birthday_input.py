@@ -25,6 +25,7 @@ async def handle_birthday_input(
     user: User,
     chat: Chat,
 ) -> None:
+    logger.info("Handling birthday input")
     user_name = chat.get_user_name()
     user_input = chat.get_message_text()
     user_language = get_language(chat)
@@ -45,7 +46,6 @@ async def handle_birthday_input(
             reply.extraction_error,
         )
         raise BirthdayParsingError(reply.extraction_error)
-        # await chat.send_text(reply.extraction_error)
     else:
         logger.info(
             "User birthday input %s %s %s",
@@ -55,5 +55,5 @@ async def handle_birthday_input(
         )
         update_user_birthday(session, user, reply.birthday_text)
         logger.info("User %s birthday updated as %s", user_id, reply.birthday_text)
-        # await send_daily_forecast(user, chat)
-        # await send_command_explanation_message(chat)
+        await send_daily_forecast(user, chat)
+        await send_command_explanation_message(chat)

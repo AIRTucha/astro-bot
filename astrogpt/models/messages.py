@@ -1,9 +1,9 @@
 from .base import Base
 
-from sqlalchemy import Integer, Text, Date, ForeignKey, Boolean
+from sqlalchemy import Integer, Text, DateTime, ForeignKey, Boolean
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from astrogpt.models.user import User
-from datetime import date
+from datetime import datetime
 
 
 class Message(Base):
@@ -11,7 +11,7 @@ class Message(Base):
 
     id: Mapped[int] = mapped_column(Integer, autoincrement=True, primary_key=True)
     text: Mapped[str] = mapped_column(Text, nullable=False)
-    created_at: Mapped[date] = mapped_column(Date, nullable=False, index=True)
+    timestamp: Mapped[datetime] = mapped_column(DateTime, nullable=False, index=True)
 
     user_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("users.id"), nullable=False
@@ -21,7 +21,7 @@ class Message(Base):
     from_user = mapped_column(Boolean, nullable=False)
 
     def __repr__(self):
-        return f"id: {self.id}, message: {self.forecast_text}, user_id: {self.user_id}"
+        return f"id: {self.id}, message: {self.text}, user_id: {self.user_id}"
     
     def __str__(self):
-        return f'{self.created_at} {'User' if self.from_user else 'Bot'}: {self.text}'
+        return f'{self.timestamp} {'User' if self.from_user else 'Bot'}: {self.text}'

@@ -12,7 +12,7 @@ async def get_users_for_forecast(
     day_ago = date.today() - timedelta(days=1)
     recent_forecast_subquery = (
         session.query(DailyForecast)
-        .filter(DailyForecast.created_at > day_ago)
+        .filter(DailyForecast.timestamp > day_ago)
         .distinct()
         .subquery()
     )

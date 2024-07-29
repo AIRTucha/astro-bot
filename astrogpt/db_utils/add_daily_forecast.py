@@ -10,7 +10,7 @@ def add_daily_forecast(session: Session, user_id: int, forecast_text: str):
     )
     # Create a new DailyForecast instance
     new_forecast = DailyForecast(
-        user_id=user_id, forecast_text=forecast_text, created_at=datetime.now()
+        user_id=user_id, forecast_text=forecast_text, timestamp=datetime.now()
     )
 
     # Add the new forecast to the session and commit it

@@ -1,9 +1,9 @@
 from .base import Base
 
-from sqlalchemy import Integer, Text, Date, ForeignKey
+from sqlalchemy import Integer, Text, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from astrogpt.models.user import User
-from datetime import date
+from datetime import datetime
 
 
 class DailyForecast(Base):
@@ -11,7 +11,7 @@ class DailyForecast(Base):
 
     id: Mapped[int] = mapped_column(Integer, autoincrement=True, primary_key=True)
     forecast_text: Mapped[str] = mapped_column(Text, nullable=False)
-    created_at: Mapped[date] = mapped_column(Date, nullable=False, index=True)
+    timestamp: Mapped[datetime] = mapped_column(DateTime, nullable=False, index=True)
 
     user_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("users.id"), nullable=False
