@@ -5,30 +5,25 @@ from pydantic import BaseModel, Field  # <-- Uses v1 namespace
 from enum import Enum
 
 
-class BirthDayValidation(BaseModel):
-    birthday_text: str = Field(description="The birthday of the user in text format")
-    extraction_error: Optional[str] = Field(
-        description="Message to display if the birthday could not be extracted"
+class CollectDataParser(BaseModel):
+    birthday_text: Optional[str] = Field(
+        description="The birthday of the user in text format"
+    )
+
+    language: Optional[str] = Field(
+        description="Desired language option of the user. Do not consider language already available in user information. Convert it to single English word like in list of supported languages"
+    )
+
+    parsing_feedback: str = Field(
+        description="Explanation of data extraction result with clarification of errors is needed"
     )
 
 
-birth_day_parser = PydanticOutputParser(pydantic_object=BirthDayValidation)
-
-
-class UserLanguageValidation(BaseModel):
-    language: str = Field(
-        description="Desired language option of the user. Convert it to single English word like in list of supported languages"
-    )
-    extraction_error: Optional[str] = Field(
-        description="An error explaining why the language could not be extracted"
-    )
-
-
-user_language_parser = PydanticOutputParser(pydantic_object=UserLanguageValidation)
+collect_data_parser = PydanticOutputParser(pydantic_object=CollectDataParser)
 
 
 class Decision(str, Enum):
-    update_birth_day = "update_birthday"
+    update_user_data = "update_user_data"
     update_language = "update_language"
     subscribe = "subscribe"
     unsubscribe = "unsubscribe"

@@ -2,15 +2,16 @@ from telegram import Update
 from telegram.ext import (
     ContextTypes,
 )
-from astrogpt.llm.chains import parse_birthday_chain, menu_chain
 from ..logger.logger import logger
 
 from astrogpt.models.engine import engine
 from astrogpt.models.user import User
 from sqlalchemy.orm import Session
-from astrogpt.handler.start_handler import handle_start
 
-from astrogpt.handler.handle_birthday_input import handle_birthday_input
+from astrogpt.bot_utils.send_welcome_message import (
+    send_welcome_message,
+)
+
 from astrogpt.bot_utils.send_daily_forecast import send_daily_forecast
 from astrogpt.db_utils.update_user import update_user_birthday
 from astrogpt.handler.subscribe_handler import handle_subscribe
@@ -31,7 +32,13 @@ from astrogpt.db_utils.update_user import (
 from astrogpt.bot_utils.send_unexpected_input_reply import send_unexpected_input_reply
 from astrogpt.bot_utils.chat import Chat
 from astrogpt.bot_utils.reply_chat import ReplyChat
-from astrogpt.handler.llm_menu import handle_menu_with_llm
+from astrogpt.handler.llm_handlers.handle_menu_with_llm import handle_menu_with_llm
+
+from astrogpt.handler.llm_handlers.handle_collect_data_data_with_llm import (
+    handle_collect_data_data_with_llm,
+)
+from astrogpt.bot_utils.send_reply_to_user import send_reply_to_user
+from astrogpt.db_utils.create_user import create_user
 
 
 def is_message_subscribe(chat: Chat) -> bool:
@@ -53,15 +60,33 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
             user = get_user_from_chat(session, chat)
             if user is None:
                 logger.info("User does to exist %s", user_id)
-                await handle_start(update, context)
+                create_user(session, chat)
+                user = get_user_from_chat(session, chat)
+                await send_welcome_message(chat)
+
+            chat.refresh_state(session)
+            if user.isRegistered():
+                actions_take = await handle_menu_with_llm(chat, user, session)
+                await send_reply_to_user(
+                    session=session,
+                    chat=chat,
+                    user=user,
+                    actions_taken=actions_take,
+                    user_input=user_input,
+                )
             else:
-                chat.refresh_state(session)
-                if user.date_of_birth_text is None:
-                    logger.info("Birthday input %s", user_id)
-                    await handle_birthday_input(session, user, chat)
-                    logger.info("OK")
-                else:
-                    await handle_menu_with_llm(chat, user, session)
+                actions_take = await handle_collect_data_data_with_llm(
+                    chat,
+                    user,
+                    session,
+                )
+                await send_reply_to_user(
+                    session=session,
+                    chat=chat,
+                    user=user,
+                    actions_taken=actions_take,
+                    user_input=user_input,
+                )
 
     except Exception as e:
         await send_critical_error(chat, str(e))

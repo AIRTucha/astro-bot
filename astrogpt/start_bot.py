@@ -9,7 +9,7 @@ from telegram.ext import (
     filters,
 )
 from astrogpt.handler.cancel_handler import handle_cancel
-from astrogpt.handler.start_handler import handle_start
+
 from astrogpt.handler.text_handler import handle_text
 from astrogpt.handler.subscribe_handler import subscribe_handler
 from astrogpt.handler.unsubscribe_handler import unsubscribe_handler
@@ -47,7 +47,7 @@ class Bot:
 
     async def start(self):
 
-        self.application.add_handler(CommandHandler("start", handle_start))
+        self.application.add_handler(CommandHandler("start", handle_text))
         self.application.add_handler(CommandHandler("subscribe", subscribe_handler))
         self.application.add_handler(CommandHandler("unsubscribe", unsubscribe_handler))
         self.application.add_handler(CommandHandler("stop", stop_handler))

@@ -3,8 +3,6 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from .prompts import (
     welcome_prompt,
-    welcome_again_prompt,
-    parse_date_of_birth_prompt,
     prediction_prompt,
     cancel_prompt,
     translate_system_error_prompt,
@@ -15,39 +13,16 @@ from .prompts import (
     menu_prompt,
     reply_user_prompt,
     parse_user_language_prompt,
+    collect_data_prompt,
 )
-from .parsers import birth_day_parser, menu_decision_parser, user_language_parser
+from .parsers import collect_data_parser, menu_decision_parser
 from astrogpt.llm.prompt import prompt, textGenModel, reasoningModel
 
 
 welcome_chain = prompt(textGenModel, welcome_prompt) | StrOutputParser()
 
-welcome_again_chain = prompt(textGenModel, welcome_again_prompt) | StrOutputParser()
-
 command_explanation_chain = (
     prompt(textGenModel, command_explanation_prompt) | StrOutputParser()
-)
-
-parse_birthday_chain = (
-    prompt(
-        reasoningModel,
-        parse_date_of_birth_prompt,
-        partial_variables={
-            "format_instructions": birth_day_parser.get_format_instructions()
-        },
-    )
-    | birth_day_parser
-)
-
-parse_user_language_chain = (
-    prompt(
-        reasoningModel,
-        parse_user_language_prompt,
-        partial_variables={
-            "format_instructions": user_language_parser.get_format_instructions()
-        },
-    )
-    | user_language_parser
 )
 
 menu_chain = (
@@ -83,3 +58,14 @@ unexpected_input_reply_chain = (
 )
 
 reply_user_input_chain = prompt(textGenModel, reply_user_prompt) | StrOutputParser()
+
+collect_user_data_chain = (
+    prompt(
+        reasoningModel,
+        collect_data_prompt,
+        partial_variables={
+            "format_instructions": collect_data_parser.get_format_instructions()
+        },
+    )
+    | collect_data_parser
+)

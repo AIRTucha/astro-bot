@@ -26,3 +26,6 @@ class User(Base):
 
     def __repr__(self):
         return f"id: {self.id}, name: {self.name}, date_of_birth_text: {self.date_of_birth_text}, language: {self.language}"
+
+    def isRegistered(self):
+        return self.date_of_birth_text is not None

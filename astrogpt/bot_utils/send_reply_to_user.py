@@ -3,9 +3,7 @@ from ..logger.logger import logger
 from astrogpt.llm.chains import menu_chain, reply_user_input_chain
 from astrogpt.db_utils.get_messages import get_messages
 from astrogpt.llm.parsers import Decision
-from astrogpt.handler.handle_birthday_input import (
-    handle_birthday_input,
-)
+
 from astrogpt.models.user import User
 from astrogpt.models.messages import Message
 from astrogpt.bot_utils.chat import Chat
