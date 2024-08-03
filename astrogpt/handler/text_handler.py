@@ -65,28 +65,14 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
                 await send_welcome_message(chat)
 
             chat.refresh_state(session)
-            if user.isRegistered():
-                actions_take = await handle_menu_with_llm(chat, user, session)
-                await send_reply_to_user(
-                    session=session,
-                    chat=chat,
-                    user=user,
-                    actions_taken=actions_take,
-                    user_input=user_input,
-                )
-            else:
-                actions_take = await handle_collect_data_data_with_llm(
-                    chat,
-                    user,
-                    session,
-                )
-                await send_reply_to_user(
-                    session=session,
-                    chat=chat,
-                    user=user,
-                    actions_taken=actions_take,
-                    user_input=user_input,
-                )
+            actions_take = await handle_menu_with_llm(chat, user, session)
+            await send_reply_to_user(
+                session=session,
+                chat=chat,
+                user=user,
+                actions_taken=actions_take,
+                user_input=user_input,
+            )
 
     except Exception as e:
         await send_critical_error(chat, str(e))

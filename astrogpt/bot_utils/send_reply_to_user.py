@@ -12,7 +12,6 @@ from sqlalchemy.orm import Session
 from astrogpt.llm.parsers import MenuDecision
 from astrogpt.bot_utils.send_unexpected_input_reply import send_unexpected_input_reply
 
-from astrogpt.bot_utils.send_daily_forecast import send_daily_forecast
 from astrogpt.db_utils.update_user import update_user_birthday
 from astrogpt.handler.subscribe_handler import handle_subscribe
 from astrogpt.handler.unsubscribe_handler import handle_unsubscribe

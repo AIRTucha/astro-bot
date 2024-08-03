@@ -7,6 +7,9 @@ from telegram import (
     KeyboardButton,
     Bot,
 )
+from astrogpt.db_utils.update_user import update_user_daily_forecast_subscription
+from astrogpt.models.engine import engine
+from sqlalchemy.orm import Session
 
 
 class BotChat(Chat):
@@ -24,21 +27,29 @@ class BotChat(Chat):
         return self.user.id
 
     async def send_text(self, text: str, *button_texts: str) -> None:
-        if len(button_texts) == 0:
-            await self.bot.send_message(
-                chat_id=self.user.id, text=text, reply_markup=ReplyKeyboardRemove()
-            )
-        else:
-            keyboard = [[KeyboardButton(text) for text in button_texts]]
-            await self.bot.send_message(
-                chat_id=self.user.id,
-                text=text,
-                reply_markup=ReplyKeyboardMarkup(
-                    keyboard=keyboard,
-                    resize_keyboard=True,
-                    one_time_keyboard=True,
-                ),
-            )
+        try:
+            if len(button_texts) == 0:
+                await self.bot.send_message(
+                    chat_id=self.user.id, text=text, reply_markup=ReplyKeyboardRemove()
+                )
+            else:
+                keyboard = [[KeyboardButton(text) for text in button_texts]]
+                await self.bot.send_message(
+                    chat_id=self.user.id,
+                    text=text,
+                    reply_markup=ReplyKeyboardMarkup(
+                        keyboard=keyboard,
+                        resize_keyboard=True,
+                        one_time_keyboard=True,
+                    ),
+                )
+        except Exception as e:
+            err_str = str(e).lower()
+            if "bot was blocked by the user" in err_str:
+                with Session(engine) as session:
+                    update_user_daily_forecast_subscription(
+                        session, self.user.id, is_subscribed=False
+                    )
 
     def get_message_text(self) -> str:
         return ""

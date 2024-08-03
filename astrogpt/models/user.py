@@ -1,7 +1,7 @@
 from .base import Base
 from typing import Optional
 
-from sqlalchemy import String, BigInteger, Boolean
+from sqlalchemy import String, BigInteger, Boolean, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 
@@ -10,11 +10,15 @@ class User(Base):
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
     name: Mapped[str] = mapped_column(String(60), nullable=False)
-    date_of_birth_text: Mapped[str] = mapped_column(String(60), nullable=True)
+    date_of_birth_text: Mapped[Optional[str]] = mapped_column(String(60), nullable=True)
 
     language: Mapped[Optional[str]] = mapped_column(String(2), default="en")
 
     daily_forecast: Mapped[bool] = mapped_column(Boolean, default=True)
+
+    target_topics: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    hobbies: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    self_description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
     daily_forecasts = relationship(
         "DailyForecast", back_populates="user", cascade="all, delete-orphan"
@@ -28,4 +32,10 @@ class User(Base):
         return f"id: {self.id}, name: {self.name}, date_of_birth_text: {self.date_of_birth_text}, language: {self.language}"
 
     def isRegistered(self):
-        return self.date_of_birth_text is not None
+        return (
+            self.date_of_birth_text is not None
+            and self.language is not None
+            and self.target_topics is not None
+            and self.hobbies is not None
+            and self.self_description is not None
+        )

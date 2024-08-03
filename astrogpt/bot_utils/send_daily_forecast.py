@@ -29,17 +29,23 @@ def format_last_forecasts(forecasts: List[DailyForecast]) -> str:
     return previous_forecasts_title + "\n".join([format_forecast(f) for f in forecasts])
 
 
+def replace_none_with_missing(text: str | None) -> str:
+    return text if text is not None else "MISSING"
+
+
 async def send_daily_forecast(user: User, chat: Chat) -> None:
     user_name = chat.get_user_name()
     user_language = get_language(chat)
     with Session(engine) as session:
         last_forecasts = get_last_forecasts(session, user.id, 3)
-        logger.info("User %s forecast requested", user.id)
         prediction = prediction_chain.invoke(
             {
                 "user_name": user_name,
-                "birth_day": user.date_of_birth_text,
+                "user_birthday": replace_none_with_missing(user.date_of_birth_text),
                 "user_language": user_language,
+                "user_interest": replace_none_with_missing(user.target_topics),
+                "user_hobbies": replace_none_with_missing(user.hobbies),
+                "user_description": replace_none_with_missing(user.self_description),
                 "previous_predictions": format_last_forecasts(last_forecasts),
             }
         )

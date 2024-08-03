@@ -12,7 +12,6 @@ from sqlalchemy.orm import Session
 from astrogpt.llm.parsers import CollectDataParser
 from astrogpt.bot_utils.send_unexpected_input_reply import send_unexpected_input_reply
 
-from astrogpt.bot_utils.send_daily_forecast import send_daily_forecast
 from astrogpt.db_utils.update_user import update_user_birthday
 from astrogpt.handler.subscribe_handler import handle_subscribe
 from astrogpt.handler.unsubscribe_handler import handle_unsubscribe
@@ -23,8 +22,17 @@ from dataclasses import dataclass
 from astrogpt.bot_utils.send_reply_to_user import send_reply_to_user
 from astrogpt.db_utils.add_message import add_message
 from astrogpt.handler.llm_handlers.utils import ActionResult
-from astrogpt.db_utils.update_user import update_user_birthday
-from astrogpt.db_utils.update_user import update_user_language
+from astrogpt.db_utils.update_user import (
+    update_user_birthday,
+    update_user_target_topics,
+    update_user_language,
+    update_user_hobbies,
+    update_user_self_description,
+)
+
+
+def replace_none_with_missing(text: str | None) -> str:
+    return text if text is not None else "MISSING"
 
 
 async def handle_collect_data_data_with_llm(
@@ -38,10 +46,8 @@ async def handle_collect_data_data_with_llm(
         message=chat.get_message_text(),
         from_user=True,
     )
-    user_name = chat.get_user_name()
     user_input = chat.get_message_text()
     user_id = chat.get_user_id()
-    user_birthday = user.date_of_birth_text
     user_language = get_language(chat)
     messages = get_messages(session, user_id)
 
@@ -53,11 +59,17 @@ async def handle_collect_data_data_with_llm(
 
     data_collected: CollectDataParser = collect_user_data_chain.invoke(
         {
-            "user_name": user_name,
-            "user_birthday": user_birthday,
+            "user_name": user.name,
             "user_input": user_input,
             "previous_conversation": previous_conversation,
             "user_language": user_language,
+            "user_birthday": replace_none_with_missing(user.date_of_birth_text),
+            "user_language": user_language,
+            "user_interest": replace_none_with_missing(user.target_topics),
+            "user_hobbies": replace_none_with_missing(user.hobbies),
+            "user_description": replace_none_with_missing(user.self_description),
+            "user_input": user_input,
+            "previous_conversation": previous_conversation,
             "user_subscription": "yes" if user.daily_forecast else "no",
         }
     )
@@ -96,6 +108,33 @@ async def handle_collect_data_data_with_llm(
                     result="Updated Successfully",
                 )
             )
+
+    if data_collected.target_topics is not None:
+        update_user_target_topics(session, user, data_collected.target_topics)
+        actions_taken.append(
+            ActionResult(
+                action="Update target topics",
+                result="Updated Successfully",
+            )
+        )
+
+    if data_collected.hobbies is not None:
+        update_user_hobbies(session, user, data_collected.hobbies)
+        actions_taken.append(
+            ActionResult(
+                action="Update hobbies",
+                result="Updated Successfully",
+            )
+        )
+
+    if data_collected.self_description is not None:
+        update_user_self_description(session, user, data_collected.self_description)
+        actions_taken.append(
+            ActionResult(
+                action="Update self description",
+                result="Updated Successfully",
+            )
+        )
 
     chat.refresh_state(session)
 

@@ -30,6 +30,7 @@ async def process_update(request: Request):
 @app.post("/sent_daily_forecast")
 async def send_daily_forecast():
     await bot.send_daily_forecast()
+    return {"status": "ok"}
 
 
 @app.post("/ready")

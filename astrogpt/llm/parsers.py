@@ -7,11 +7,23 @@ from enum import Enum
 
 class CollectDataParser(BaseModel):
     birthday_text: Optional[str] = Field(
-        description="The birthday of the user in text format"
+        description="The birthday of the user in text format, birthday should be in free for format, but it should be reasonable date of birth"
     )
 
     language: Optional[str] = Field(
         description="Desired language option of the user. Do not consider language already available in user information. Convert it to single English word like in list of supported languages"
+    )
+
+    target_topics: Optional[str] = Field(
+        description="User's interest in astrology topics. List of topics separated by comma e.g. 'love, career, health'"
+    )
+
+    hobbies: Optional[str] = Field(
+        description="User's hobbies. List of hobbies separated by comma e.g. 'reading, hiking, cooking'"
+    )
+
+    self_description: Optional[str] = Field(
+        description="Summary of user's self description. Free text."
     )
 
     parsing_feedback: str = Field(
@@ -29,6 +41,8 @@ class Decision(str, Enum):
     unsubscribe = "unsubscribe"
     request_input_clarification = "request_input_clarification"
     send_goal_achieved = "send_goal_achieved"
+    user_input_is_irrelevant = "user_input_is_irrelevant"
+    ask_for_missing_user_data = "ask_for_missing_user_data"
 
 
 class MenuDecision(BaseModel):

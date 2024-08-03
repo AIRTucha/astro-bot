@@ -7,4 +7,3 @@ poetry run alembic revision -m "Create trigger on students table"
 
 
 export DATABASE_URL=postgresql+psycopg2://postgres:local_password@localhost:5432/astro-db
-
