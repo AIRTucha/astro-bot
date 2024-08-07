@@ -37,7 +37,7 @@ def prompt(
     partial_variables: Optional[Dict[str, Any]] = None,
 ) -> RunnableSerializable[dict[str, str], BaseMessage | Any]:
     chain_prompt = ChatPromptTemplate.from_template(
-        prompt_test + "\n\n Please, answer in {user_language}.",
+        prompt_test + "\n\n Please, answer user in {user_language}.",
         partial_variables=partial_variables,
     )
     # chain_prompt

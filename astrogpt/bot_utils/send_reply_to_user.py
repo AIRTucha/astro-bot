@@ -35,6 +35,11 @@ async def send_reply_to_user(
     previous_conversation_str = "\n".join([str(message) for message in messages])
     actions_taken_str = "\n".join([str(action) for action in actions_taken])
     user_language = get_language(chat)
+    logger.info(
+        "User lang %s",
+        user_language,
+    )
+
     user_message = reply_user_input_chain.invoke(
         {
             "user_name": user_name,

@@ -14,8 +14,14 @@ from .prompts import (
     reply_user_prompt,
     advice_prompt,
     collect_data_prompt,
+    unintended_behavior_detection_prompt,
 )
-from .parsers import collect_data_parser, menu_decision_parser, advice_parser
+from .parsers import (
+    collect_data_parser,
+    menu_decision_parser,
+    advice_parser,
+    unintended_behavior_detector,
+)
 from astrogpt.llm.prompt import prompt, textGenModel, reasoningModel
 
 
@@ -79,4 +85,15 @@ advice_chain = (
         },
     )
     | advice_parser
+)
+
+unintended_behavior_detection_chain = (
+    ChatPromptTemplate.from_template(
+        unintended_behavior_detection_prompt,
+        partial_variables={
+            "format_instructions": unintended_behavior_detector.get_format_instructions()
+        },
+    )
+    | reasoningModel
+    | unintended_behavior_detector
 )

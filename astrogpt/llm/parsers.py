@@ -1,5 +1,6 @@
 from typing import Optional
 from langchain.output_parsers import PydanticOutputParser
+from astrogpt.models.warning import WarningType
 
 from pydantic import BaseModel, Field  # <-- Uses v1 namespace
 from enum import Enum
@@ -62,3 +63,18 @@ class AdviceParser(BaseModel):
 
 
 advice_parser = PydanticOutputParser(pydantic_object=AdviceParser)
+
+
+class UnintendedBehaviorDetector(BaseModel):
+    warning: Optional[WarningType] = Field(description="Type of warning to be issued")
+    warning_explanation: Optional[str] = Field(
+        description="Explanation of the warning to be issued"
+    )
+
+    def __str__(self) -> str:
+        return f"Warning: {self.warning}, Explanation: {self.warning_explanation}"
+
+
+unintended_behavior_detector = PydanticOutputParser(
+    pydantic_object=UnintendedBehaviorDetector
+)

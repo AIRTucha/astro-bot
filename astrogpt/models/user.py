@@ -28,6 +28,10 @@ class User(Base):
         "Advice", back_populates="user", cascade="all, delete-orphan"
     )
 
+    warnings = relationship(
+        "Warning", back_populates="user", cascade="all, delete-orphan"
+    )
+
     def __repr__(self):
         return f"id: {self.id}, name: {self.name}, date_of_birth_text: {self.date_of_birth_text}, language: {self.language}"
 
