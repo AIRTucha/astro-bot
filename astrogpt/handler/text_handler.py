@@ -72,8 +72,8 @@ async def handle_text_input_with_llm(
         unintended_behavior_detection_chain.invoke(
             {
                 "user_input": user_input,
-                "previous_conversation": "\n".join([str(m) for m in message]),
-                "previous_warnings": "\n".join([str(w) for w in warnings]),
+                "previous_conversation": "\n\n".join([str(m) for m in message]),
+                "previous_warnings": "\n\n".join([str(w) for w in warnings]),
             }
         )
     )

@@ -121,7 +121,7 @@ async def handle_menu_with_llm(
                         "user_birthday": replace_none_with_missing(
                             user.date_of_birth_text
                         ),
-                        "joke_examples": joke_example,
+                        "joke_examples": "\n\n".join(joke_example),
                         "user_language": user_language,
                         "user_input": user_input,
                     }
