@@ -1,6 +1,6 @@
 from typing import List
 from ...logger.logger import logger
-from astrogpt.llm.chains import menu_chain, reply_user_input_chain
+from astrogpt.llm.chains import menu_chain, joke_chain
 from astrogpt.db_utils.get_messages import get_messages
 from astrogpt.llm.parsers import Decision, AdviceParser
 
@@ -29,6 +29,8 @@ from astrogpt.llm.chains import advice_chain
 from astrogpt.db_utils.get_last_advices import get_last_advices
 from astrogpt.db_utils.get_last_daily_forecasts import get_last_forecasts
 from astrogpt.db_utils.add_advice import add_advice
+from astrogpt.db_utils.add_joke import add_joke
+from astrogpt.db_utils.get_jokes import get_jokes
 
 
 def replace_none_with_missing(text: str | None) -> str:
@@ -111,6 +113,21 @@ async def handle_menu_with_llm(
                 previous_actions.append(
                     ActionResult(action="Unsubscribe", result="Subscription Canceled")
                 )
+            elif reply.decision == Decision.joke_about_astrology:
+                joke_example = get_jokes(session, count=3)
+                joke = joke_chain.invoke(
+                    {
+                        "user_name": user_name,
+                        "user_birthday": replace_none_with_missing(
+                            user.date_of_birth_text
+                        ),
+                        "joke_examples": joke_example,
+                        "user_language": user_language,
+                        "user_input": user_input,
+                    }
+                )
+                add_joke(session=session, joke=joke)
+                previous_actions.append(ActionResult(action="Joke", result=joke))
             elif reply.decision == Decision.provide_situational_advice:
                 advice: AdviceParser = advice_chain.invoke(
                     {

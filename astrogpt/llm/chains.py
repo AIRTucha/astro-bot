@@ -15,6 +15,7 @@ from .prompts import (
     advice_prompt,
     collect_data_prompt,
     unintended_behavior_detection_prompt,
+    joke_prompt,
 )
 from .parsers import (
     collect_data_parser,
@@ -97,3 +98,5 @@ unintended_behavior_detection_chain = (
     | reasoningModel
     | unintended_behavior_detector
 )
+
+joke_chain = prompt(textGenModel, joke_prompt) | StrOutputParser()

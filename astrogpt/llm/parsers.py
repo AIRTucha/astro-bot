@@ -29,10 +29,11 @@ class Decision(str, Enum):
     subscribe = "subscribe"
     unsubscribe = "unsubscribe"
     request_input_clarification = "request_input_clarification"
-    send_goal_achieved = "send_goal_achieved"
+    reply_to_user_with_result = "reply_to_user_with_result"
     user_input_is_irrelevant = "user_input_is_irrelevant"
     ask_for_missing_user_data = "ask_for_missing_user_data"
     provide_situational_advice = "provide_situational_advice"
+    joke_about_astrology = "joke_about_astrology"
 
 
 class MenuDecision(BaseModel):
