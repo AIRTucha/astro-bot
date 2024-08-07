@@ -43,9 +43,6 @@ async def send_daily_forecast(user: User, chat: Chat) -> None:
                 "user_name": user_name,
                 "user_birthday": replace_none_with_missing(user.date_of_birth_text),
                 "user_language": user_language,
-                "user_interest": replace_none_with_missing(user.target_topics),
-                "user_hobbies": replace_none_with_missing(user.hobbies),
-                "user_description": replace_none_with_missing(user.self_description),
                 "previous_predictions": format_last_forecasts(last_forecasts),
             }
         )

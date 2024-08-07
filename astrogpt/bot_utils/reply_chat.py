@@ -54,7 +54,7 @@ class ReplyChat(Chat):
 
         if not (user is None):
             self.user_name = user.name
-            self.language = user.language
+            self.language = user.language if user.language is not None else "en"
 
     def get_user_name(self) -> str:
         return self.user_name

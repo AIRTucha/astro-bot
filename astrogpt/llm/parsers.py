@@ -14,18 +14,6 @@ class CollectDataParser(BaseModel):
         description="Desired language option of the user. Do not consider language already available in user information. Convert it to single English word like in list of supported languages"
     )
 
-    target_topics: Optional[str] = Field(
-        description="User's interest in astrology topics. List of topics separated by comma e.g. 'love, career, health'"
-    )
-
-    hobbies: Optional[str] = Field(
-        description="User's hobbies. List of hobbies separated by comma e.g. 'reading, hiking, cooking'"
-    )
-
-    self_description: Optional[str] = Field(
-        description="Summary of user's self description. Free text."
-    )
-
     parsing_feedback: str = Field(
         description="Explanation of data extraction result with clarification of errors is needed"
     )
@@ -43,6 +31,7 @@ class Decision(str, Enum):
     send_goal_achieved = "send_goal_achieved"
     user_input_is_irrelevant = "user_input_is_irrelevant"
     ask_for_missing_user_data = "ask_for_missing_user_data"
+    provide_situational_advice = "provide_situational_advice"
 
 
 class MenuDecision(BaseModel):
@@ -56,3 +45,20 @@ class MenuDecision(BaseModel):
 
 
 menu_decision_parser = PydanticOutputParser(pydantic_object=MenuDecision)
+
+
+class AdviceParser(BaseModel):
+    astrological_advice: Optional[str] = Field(
+        description="Description of astrological advice for the user"
+    )
+
+    situation: Optional[str] = Field(
+        description="Description of the situation for which the advice is given"
+    )
+
+    clarification: Optional[str] = Field(
+        description="Explanation of the advice with clarification of errors is needed"
+    )
+
+
+advice_parser = PydanticOutputParser(pydantic_object=AdviceParser)

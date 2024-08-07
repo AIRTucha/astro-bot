@@ -61,8 +61,9 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
             if user is None:
                 logger.info("User does to exist %s", user_id)
                 create_user(session, chat)
-                user = get_user_from_chat(session, chat)
                 await send_welcome_message(chat)
+                await handle_text(update, context)
+                return
 
             chat.refresh_state(session)
             actions_take = await handle_menu_with_llm(chat, user, session)

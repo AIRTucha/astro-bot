@@ -21,7 +21,7 @@ class BotChat(Chat):
         return self.user.name
 
     def get_language_code(self) -> str:
-        return self.user.language
+        return self.user.language if self.user.language is not None else "en"
 
     def get_user_id(self) -> int:
         return self.user.id

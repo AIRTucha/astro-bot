@@ -12,10 +12,10 @@ from .prompts import (
     unexpected_input_reply_prompt,
     menu_prompt,
     reply_user_prompt,
-    parse_user_language_prompt,
+    advice_prompt,
     collect_data_prompt,
 )
-from .parsers import collect_data_parser, menu_decision_parser
+from .parsers import collect_data_parser, menu_decision_parser, advice_parser
 from astrogpt.llm.prompt import prompt, textGenModel, reasoningModel
 
 
@@ -68,4 +68,15 @@ collect_user_data_chain = (
         },
     )
     | collect_data_parser
+)
+
+advice_chain = (
+    prompt(
+        reasoningModel,
+        advice_prompt,
+        partial_variables={
+            "format_instructions": advice_parser.get_format_instructions()
+        },
+    )
+    | advice_parser
 )

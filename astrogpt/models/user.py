@@ -16,16 +16,16 @@ class User(Base):
 
     daily_forecast: Mapped[bool] = mapped_column(Boolean, default=True)
 
-    target_topics: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    hobbies: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    self_description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-
     daily_forecasts = relationship(
         "DailyForecast", back_populates="user", cascade="all, delete-orphan"
     )
 
     messages = relationship(
         "Message", back_populates="user", cascade="all, delete-orphan"
+    )
+
+    advices = relationship(
+        "Advice", back_populates="user", cascade="all, delete-orphan"
     )
 
     def __repr__(self):

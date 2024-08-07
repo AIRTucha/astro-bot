@@ -2,7 +2,7 @@ from typing import List
 from ...logger.logger import logger
 from astrogpt.llm.chains import menu_chain, reply_user_input_chain
 from astrogpt.db_utils.get_messages import get_messages
-from astrogpt.llm.parsers import Decision
+from astrogpt.llm.parsers import Decision, AdviceParser
 
 from astrogpt.models.user import User
 from astrogpt.models.messages import Message
@@ -25,6 +25,10 @@ from astrogpt.handler.llm_handlers.utils import ActionResult
 from astrogpt.handler.llm_handlers.handle_collect_data_data_with_llm import (
     handle_collect_data_data_with_llm,
 )
+from astrogpt.llm.chains import advice_chain
+from astrogpt.db_utils.get_last_advices import get_last_advices
+from astrogpt.db_utils.get_last_daily_forecasts import get_last_forecasts
+from astrogpt.db_utils.add_advice import add_advice
 
 
 def replace_none_with_missing(text: str | None) -> str:
@@ -60,17 +64,13 @@ async def handle_menu_with_llm(
         try:
             reply: MenuDecision = menu_chain.invoke(
                 {
+                    "actions_taken": previous_actions_str,
                     "user_name": user_name,
                     "user_birthday": replace_none_with_missing(user.date_of_birth_text),
                     "user_language": user_language,
-                    "user_interest": replace_none_with_missing(user.target_topics),
-                    "user_hobbies": replace_none_with_missing(user.hobbies),
-                    "user_description": replace_none_with_missing(
-                        user.self_description
-                    ),
                     "user_input": user_input,
                     "previous_conversation": previous_conversation,
-                    "actions_taken": previous_actions_str,
+                    "previous_forecast": get_last_forecasts(session, user_id),
                     "user_subscription": "yes" if user.daily_forecast else "no",
                 }
             )
@@ -111,6 +111,48 @@ async def handle_menu_with_llm(
                 previous_actions.append(
                     ActionResult(action="Unsubscribe", result="Subscription Canceled")
                 )
+            elif reply.decision == Decision.provide_situational_advice:
+                advice: AdviceParser = advice_chain.invoke(
+                    {
+                        "user_name": user_name,
+                        "user_birthday": replace_none_with_missing(
+                            user.date_of_birth_text
+                        ),
+                        "user_language": user_language,
+                        "user_input": user_input,
+                        "previous_conversation": previous_conversation,
+                        "previous_forecast": get_last_forecasts(session, user_id),
+                        "previous_advice": get_last_advices(session, user_id),
+                        "user_subscription": "yes" if user.daily_forecast else "no",
+                    }
+                )
+                logger.info(
+                    "User %s advice %s; %s; %s",
+                    user_id,
+                    advice.astrological_advice,
+                    advice.situation,
+                    advice.clarification,
+                )
+                if advice.clarification is not None:
+                    previous_actions.append(
+                        ActionResult(
+                            action="Provide Advice",
+                            result="Clarification needed: " + advice.clarification,
+                        )
+                    )
+                else:
+                    add_advice(
+                        session=session,
+                        user_id=user_id,
+                        advice=advice.astrological_advice,
+                        situation=advice.situation,
+                    )
+                    previous_actions.append(
+                        ActionResult(
+                            action="Provide Advice",
+                            result=advice.astrological_advice,
+                        )
+                    )
             else:
                 break
         except Exception as e:
