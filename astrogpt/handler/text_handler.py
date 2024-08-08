@@ -45,6 +45,7 @@ from astrogpt.db_utils.get_last_warnings import get_warnings
 from astrogpt.llm.parsers import UnintendedBehaviorDetector
 from astrogpt.db_utils.add_warning import add_warning
 from astrogpt.handler.llm_handlers.utils import ActionResult
+from astrogpt.models.warning import WarningType
 
 
 def is_message_subscribe(chat: Chat) -> bool:
@@ -80,12 +81,16 @@ async def handle_text_input_with_llm(
 
     logger.info("Unintended behavior detected %s", unintendedBehaviorDetector)
     if unintendedBehaviorDetector.warning is not None:
-        add_warning(
-            session,
-            user.id,
-            unintendedBehaviorDetector.warning,
-            unintendedBehaviorDetector.warning_explanation,
-        )
+        if (
+            unintendedBehaviorDetector.warning == WarningType.hacking_attempt
+            or unintendedBehaviorDetector.warning == WarningType.inappropriate_behavior
+        ):
+            add_warning(
+                session,
+                user.id,
+                unintendedBehaviorDetector.warning,
+                unintendedBehaviorDetector.warning_explanation,
+            )
 
         if len(warnings) > 3:
             return [

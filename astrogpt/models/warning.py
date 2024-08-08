@@ -9,9 +9,10 @@ import enum
 
 
 class WarningType(str, enum.Enum):
-    prompt_injection = "prompt_injection"
+    hacking_attempt = "hacking_attempt"
     inappropriate_behavior = "inappropriate_behavior"
     repetitive_input = "repetitive_input"
+    inappropriate_language = "inappropriate_language"
 
 
 class Warning(Base):
