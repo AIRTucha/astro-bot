@@ -2,7 +2,6 @@ from .base import Base
 
 from sqlalchemy import Integer, Text, DateTime, ForeignKey, Enum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from astrogpt.models.user import User
 from datetime import datetime
 
 import enum
@@ -11,7 +10,7 @@ import enum
 class WarningType(str, enum.Enum):
     hacking_attempt = "hacking_attempt"
     inappropriate_behavior = "inappropriate_behavior"
-    repetitive_input = "repetitive_input"
+    repetitive_unrelated_input = "repetitive_unrelated_input"
     inappropriate_language = "inappropriate_language"
 
 

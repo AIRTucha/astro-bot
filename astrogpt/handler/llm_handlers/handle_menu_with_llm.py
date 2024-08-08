@@ -5,21 +5,16 @@ from astrogpt.db_utils.get_messages import get_messages
 from astrogpt.llm.parsers import Decision, AdviceParser
 
 from astrogpt.models.user import User
-from astrogpt.models.messages import Message
 from astrogpt.bot_utils.reply_chat import ReplyChat
-from astrogpt.bot_utils.send_critical_error import send_critical_error
 from sqlalchemy.orm import Session
 from astrogpt.llm.parsers import MenuDecision
-from astrogpt.bot_utils.send_unexpected_input_reply import send_unexpected_input_reply
 
-from astrogpt.db_utils.update_user import update_user_birthday
+
 from astrogpt.handler.subscribe_handler import handle_subscribe
 from astrogpt.handler.unsubscribe_handler import handle_unsubscribe
 from astrogpt.db_utils.get_messages import get_messages
-from astrogpt.bot_utils.send_unexpected_input_reply import send_unexpected_input_reply
 from astrogpt.bot_utils.language import get_language
 
-from astrogpt.bot_utils.send_reply_to_user import send_reply_to_user
 from astrogpt.db_utils.add_message import add_message
 from astrogpt.handler.llm_handlers.utils import ActionResult
 from astrogpt.handler.llm_handlers.handle_collect_data_data_with_llm import (
@@ -66,7 +61,7 @@ async def handle_menu_with_llm(
         try:
             reply: MenuDecision = menu_chain.invoke(
                 {
-                    "actions_taken": previous_actions_str,
+                    "processing_steps": previous_actions_str,
                     "user_name": user_name,
                     "user_birthday": replace_none_with_missing(user.date_of_birth_text),
                     "user_language": user_language,
@@ -81,7 +76,7 @@ async def handle_menu_with_llm(
                 "User %s menu decision %s %s",
                 user_id,
                 reply.decision,
-                reply.decision_details,
+                reply.decision_context,
             )
 
             previous_actions.append(reply)
@@ -113,7 +108,7 @@ async def handle_menu_with_llm(
                 previous_actions.append(
                     ActionResult(action="Unsubscribe", result="Subscription Canceled")
                 )
-            elif reply.decision == Decision.joke_about_astrology:
+            elif reply.decision == Decision.trigger_joke_about_astrology_generator:
                 joke_example = get_jokes(session, count=3)
                 joke = joke_chain.invoke(
                     {
@@ -128,7 +123,7 @@ async def handle_menu_with_llm(
                 )
                 add_joke(session=session, joke=joke)
                 previous_actions.append(ActionResult(action="Joke", result=joke))
-            elif reply.decision == Decision.provide_situational_advice:
+            elif reply.decision == Decision.trigger_situational_advice_generator:
                 advice: AdviceParser = advice_chain.invoke(
                     {
                         "user_name": user_name,

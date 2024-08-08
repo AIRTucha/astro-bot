@@ -29,7 +29,7 @@ def upgrade() -> None:
             sa.Enum(
                 "hacking_attempt",
                 "inappropriate_behavior",
-                "repetitive_input",
+                "repetitive_unrelated_input",
                 "inappropriate_language",
                 name="warningtype",
             ),

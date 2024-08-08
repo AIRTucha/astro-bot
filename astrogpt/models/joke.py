@@ -1,8 +1,7 @@
 from .base import Base
 
-from sqlalchemy import Integer, Text, DateTime, ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-from astrogpt.models.user import User
+from sqlalchemy import Integer, Text, DateTime
+from sqlalchemy.orm import Mapped, mapped_column
 from datetime import datetime
 
 

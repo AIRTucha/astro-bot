@@ -32,18 +32,18 @@ class Decision(str, Enum):
     reply_to_user_with_result = "reply_to_user_with_result"
     user_input_is_irrelevant = "user_input_is_irrelevant"
     ask_for_missing_user_data = "ask_for_missing_user_data"
-    provide_situational_advice = "provide_situational_advice"
-    joke_about_astrology = "joke_about_astrology"
+    trigger_situational_advice_generator = "trigger_situational_advice_generator"
+    trigger_joke_about_astrology_generator = "trigger_joke_about_astrology_generator"
 
 
 class MenuDecision(BaseModel):
     decision: Decision = Field(description="Decision for future action to take")
-    decision_details: str = Field(
-        description="Provide necessary context for future action of the bot"
+    decision_context: str = Field(
+        description="Provide context for future action, if decision is related to communication with user, provide an outline of information to be communicated"
     )
 
     def __str__(self) -> str:
-        return f"Action: {self.decision}, Details: {self.decision_details}"
+        return f"Action: {self.decision}, Details: {self.decision_context}"
 
 
 menu_decision_parser = PydanticOutputParser(pydantic_object=MenuDecision)
