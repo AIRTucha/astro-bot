@@ -108,7 +108,7 @@ async def handle_menu_with_llm(
                 previous_actions.append(
                     ActionResult(action="Unsubscribe", result="Subscription Canceled")
                 )
-            elif reply.decision == Decision.trigger_joke_about_astrology_generator:
+            elif reply.decision == Decision.get_joke_about_astrology_generator:
                 joke_example = get_jokes(session, count=3)
                 joke = joke_chain.invoke(
                     {
@@ -123,7 +123,7 @@ async def handle_menu_with_llm(
                 )
                 add_joke(session=session, joke=joke)
                 previous_actions.append(ActionResult(action="Joke", result=joke))
-            elif reply.decision == Decision.trigger_situational_advice_generator:
+            elif reply.decision == Decision.get_situational_advice_generator:
                 advice: AdviceParser = advice_chain.invoke(
                     {
                         "user_name": user_name,

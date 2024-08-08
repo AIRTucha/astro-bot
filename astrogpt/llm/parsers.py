@@ -32,8 +32,8 @@ class Decision(str, Enum):
     reply_to_user_with_result = "reply_to_user_with_result"
     user_input_is_irrelevant = "user_input_is_irrelevant"
     ask_for_missing_user_data = "ask_for_missing_user_data"
-    trigger_situational_advice_generator = "trigger_situational_advice_generator"
-    trigger_joke_about_astrology_generator = "trigger_joke_about_astrology_generator"
+    get_situational_advice_generator = "get_situational_advice_generator"
+    get_joke_about_astrology_generator = "get_joke_about_astrology_generator"
 
 
 class MenuDecision(BaseModel):
