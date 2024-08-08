@@ -15,7 +15,7 @@ from astrogpt.db_utils.update_user import (
 from astrogpt.bot_utils.reply_chat import ReplyChat
 
 
-async def stop_handler(update: Update, context: ContextTypes) -> None:
+async def stop_handler(update: Update, _: ContextTypes) -> None:
     chat = ReplyChat(update)
 
     with Session(engine) as session:

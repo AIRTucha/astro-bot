@@ -10,7 +10,6 @@ from astrogpt.logger.logger import logger
 from typing import List
 
 from astrogpt.bot_utils.chat import Chat
-from astrogpt.bot_utils.generate_daily_forecast import generate_daily_forecast
 
 previous_forecasts_title = """"
 Previous forecasts:
@@ -34,6 +33,19 @@ def replace_none_with_missing(text: str | None) -> str:
     return text if text is not None else "MISSING"
 
 
-async def send_daily_forecast(user: User, chat: Chat) -> None:
-    prediction = await generate_daily_forecast(user, chat)
-    await chat.send_text(prediction)
+async def generate_daily_forecast(user: User, chat: Chat) -> None:
+    user_name = chat.get_user_name()
+    user_language = get_language(chat)
+    with Session(engine) as session:
+        last_forecasts = get_last_forecasts(session, user.id, 3)
+        prediction = prediction_chain.invoke(
+            {
+                "user_name": user_name,
+                "user_birthday": replace_none_with_missing(user.date_of_birth_text),
+                "user_language": user_language,
+                "previous_predictions": format_last_forecasts(last_forecasts),
+            }
+        )
+        logger.info("User %s forecast received", user.id)
+        add_daily_forecast(session, user.id, prediction)
+        return prediction

@@ -13,7 +13,7 @@ from astrogpt.db_utils.get_messages import get_messages
 from astrogpt.bot_utils.language import get_language
 
 from astrogpt.db_utils.add_message import add_message
-from astrogpt.handler.llm_handlers.utils import ActionResult
+from astrogpt.handler.llm_reasoning.action_result import ActionResult
 from astrogpt.db_utils.update_user import (
     update_user_birthday,
     update_user_language,
@@ -24,7 +24,7 @@ def replace_none_with_missing(text: str | None) -> str:
     return text if text is not None else "MISSING"
 
 
-async def handle_collect_data_data_with_llm(
+async def collect_data(
     chat: ReplyChat,
     user: User,
     session: Session,
@@ -55,7 +55,6 @@ async def handle_collect_data_data_with_llm(
             "user_birthday": replace_none_with_missing(user.date_of_birth_text),
             "user_language": user_language,
             "user_input": user_input,
-            "previous_conversation": previous_conversation,
             "user_subscription": "yes" if user.daily_forecast else "no",
         }
     )
@@ -68,14 +67,26 @@ async def handle_collect_data_data_with_llm(
         )
     )
 
-    if data_collected.birthday_text is not None:
-        update_user_birthday(session, user, data_collected.birthday_text)
+    if not data_collected.is_data_about_user:
         actions_taken.append(
-            ActionResult(action="Update birthday", result="Updated Successfully")
+            ActionResult(
+                action="Data extraction",
+                result="It is not clear if data is about the user, clarification is needed",
+            )
+        )
+        return actions_taken
+
+    if data_collected.user_birthday_text is not None:
+        update_user_birthday(session, user, data_collected.user_birthday_text)
+        actions_taken.append(
+            ActionResult(
+                action="Update birthday",
+                result=f"Successfully updated to {data_collected.user_birthday_text}",
+            )
         )
 
     if data_collected.language is not None:
-        lang_code = lang_codes.get(data_collected.language)
+        lang_code = lang_codes.get(data_collected.language.lower())
         if lang_code is None:
             logger.error(
                 "User language not supported %s %s", user_id, data_collected.language

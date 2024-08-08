@@ -44,13 +44,11 @@ class Bot:
 
     async def start(self):
         self.application.add_handler(CommandHandler("start", handle_text))
-        self.application.add_handler(
-            MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text)
-        )
 
         self.application.add_handler(CommandHandler("stop", stop_handler))
         self.application.add_handler(CommandHandler("cancel", stop_handler))
 
+        self.application.add_handler(MessageHandler(filters.TEXT, handle_text))
         self.application.add_error_handler(error_handler)
 
         await self.application.initialize()

@@ -199,7 +199,7 @@ _languages = {
     # "zu": "Zulu",
 }
 
-lang_codes = {value: key for key, value in _languages.items()}
+lang_codes = {value.lower(): key for key, value in _languages.items()}
 
 
 get_language = partial(_get_translation, _languages)

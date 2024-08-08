@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 
 def get_messages(session: Session, user_id: int, count=5) -> list[Message]:
     since = datetime.now() - timedelta(minutes=20)
-    return (
+    message = (
         session.query(Message)
         .filter(Message.user_id == user_id)
         .filter(Message.timestamp > since)
@@ -14,3 +14,5 @@ def get_messages(session: Session, user_id: int, count=5) -> list[Message]:
         .limit(count)
         .all()
     )
+    message.reverse()
+    return message

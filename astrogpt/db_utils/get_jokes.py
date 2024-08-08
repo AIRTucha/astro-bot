@@ -24,7 +24,7 @@ believing in astrology Imao
 ]
 
 
-def get_jokes(session: Session, count=5) -> list[str]:
+def get_jokes(session: Session, count=3) -> list[str]:
     jokes = session.query(Joke).order_by(desc(Joke.timestamp)).limit(count).all()
     joke_strings = [joke.astrologic_joke for joke in jokes]
     return (joke_example + joke_strings)[-count:]

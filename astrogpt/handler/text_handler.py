@@ -7,89 +7,32 @@ from telegram.ext import (
     ContextTypes,
 )
 from astrogpt.logger.logger import logger
-from astrogpt.bot_utils.language import get_subscribe, get_unsubscribe
 from astrogpt.bot_utils.send_critical_error import send_critical_error
 
 from astrogpt.models.user import User
 
-from astrogpt.bot_utils.chat import Chat
 from astrogpt.bot_utils.reply_chat import ReplyChat
-from astrogpt.handler.llm_handlers.handle_menu_with_llm import handle_menu_with_llm
+from astrogpt.handler.llm_reasoning.handle_main_menu import handle_main_menu
 
 from astrogpt.bot_utils.send_reply_to_user import send_reply_to_user
 from astrogpt.db_utils.create_user import create_user
-from astrogpt.llm.chains import unintended_behavior_detection_chain
-from astrogpt.db_utils.get_messages import get_messages
-from astrogpt.db_utils.get_last_warnings import get_warnings
-from astrogpt.llm.parsers import UnintendedBehaviorDetector
-from astrogpt.db_utils.add_warning import add_warning
-from astrogpt.handler.llm_handlers.utils import ActionResult
-from astrogpt.models.warning import WarningType
 from astrogpt.models.engine import engine
 from astrogpt.db_utils.get_user import get_user_from_chat
 from astrogpt.bot_utils.send_welcome_message import send_welcome_message
-
-
-def is_message_subscribe(chat: Chat) -> bool:
-    return get_subscribe(chat).lower() == chat.get_message_text().lower()
-
-
-def is_message_unsubscribe(chat: Chat) -> bool:
-    return get_unsubscribe(chat).lower() == chat.get_message_text().lower()
+from astrogpt.handler.llm_reasoning.detect_unintended_behavior import (
+    detect_unintended_behavior,
+)
 
 
 async def handle_text_input_with_llm(
     chat: ReplyChat, user: User, session: Session
 ) -> List[object]:
+    warning_actions = await detect_unintended_behavior(chat, user, session)
 
-    warnings = get_warnings(session, user.id)
-
-    if len(warnings) > 5:
-        return []
-
-    user_input = chat.get_message_text()
-
-    message = get_messages(session, user.id, 3)
-
-    unintendedBehaviorDetector: UnintendedBehaviorDetector = (
-        unintended_behavior_detection_chain.invoke(
-            {
-                "user_input": user_input,
-                "previous_conversation": "\n\n".join([str(m) for m in message]),
-                "previous_warnings": "\n\n".join([str(w) for w in warnings]),
-            }
-        )
-    )
-
-    logger.info("Unintended behavior detected %s", unintendedBehaviorDetector)
-    if unintendedBehaviorDetector.warning is not None:
-        if (
-            unintendedBehaviorDetector.warning == WarningType.hacking_attempt
-            or unintendedBehaviorDetector.warning == WarningType.inappropriate_behavior
-        ):
-            add_warning(
-                session,
-                user.id,
-                unintendedBehaviorDetector.warning,
-                unintendedBehaviorDetector.warning_explanation,
-            )
-
-        if len(warnings) > 3:
-            return [
-                ActionResult(
-                    "Warning detected",
-                    f"Warning: {unintendedBehaviorDetector.warning}, Explanation: {unintendedBehaviorDetector.warning_explanation}, You have reached the maximum number of warnings, your account will be blocked",
-                )
-            ]
-        else:
-            return [
-                ActionResult(
-                    "Warning detected",
-                    f"Warning: {unintendedBehaviorDetector.warning}, Explanation: {unintendedBehaviorDetector.warning_explanation}, Warning count: {len(warnings) + 1} out of 3",
-                )
-            ]
+    if len(warning_actions) > 0:
+        return warning_actions
     else:
-        actions_taken = await handle_menu_with_llm(chat, user, session)
+        actions_taken = await handle_main_menu(chat, user, session)
         return actions_taken
 
 

@@ -1,25 +1,24 @@
 from langchain_core.output_parsers import StrOutputParser
 
 from langchain_core.prompts import ChatPromptTemplate
-from .prompts import (
-    welcome_prompt,
-    prediction_prompt,
-    subscribed_prompt,
-    unsubscribed_prompt,
-    menu_prompt,
-    reply_user_prompt,
-    advice_prompt,
-    collect_data_prompt,
+from astrogpt.llm.prompt.advice_prompt import advice_prompt
+from astrogpt.llm.prompt.collect_data_prompt import collect_data_prompt
+from astrogpt.llm.prompt.joke_prompt import joke_prompt
+from astrogpt.llm.prompt.menu_prompt import menu_prompt
+from astrogpt.llm.prompt.prediction_prompt import prediction_prompt
+from astrogpt.llm.prompt.reply_user_prompt import reply_user_prompt
+from astrogpt.llm.prompt.unintended_behavior_detection_prompt import (
     unintended_behavior_detection_prompt,
-    joke_prompt,
 )
+from astrogpt.llm.prompt.welcome_prompt import welcome_prompt
+
 from .parsers import (
     collect_data_parser,
-    menu_decision_parser,
+    selected_action_parser,
     advice_parser,
     unintended_behavior_detector,
 )
-from astrogpt.llm.prompt import prompt, textGenModel, reasoningModel
+from astrogpt.llm.llm_models import prompt, textGenModel, reasoningModel
 
 
 welcome_chain = prompt(textGenModel, welcome_prompt) | StrOutputParser()
@@ -29,18 +28,13 @@ menu_chain = (
         reasoningModel,
         menu_prompt,
         partial_variables={
-            "format_instructions": menu_decision_parser.get_format_instructions()
+            "format_instructions": selected_action_parser.get_format_instructions()
         },
     )
-    | menu_decision_parser
+    | selected_action_parser
 )
 
-
 prediction_chain = prompt(textGenModel, prediction_prompt) | StrOutputParser()
-
-subscribed_chain = prompt(textGenModel, subscribed_prompt) | StrOutputParser()
-
-unsubscribed_chain = prompt(textGenModel, unsubscribed_prompt) | StrOutputParser()
 
 reply_user_input_chain = prompt(textGenModel, reply_user_prompt) | StrOutputParser()
 

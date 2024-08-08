@@ -25,9 +25,8 @@ textGenModel = ChatOpenAI(
 )
 
 reasoningModel = ChatOpenAI(
-    model="gpt-4o",
+    model="gpt-4o-mini",
     api_key=convert_to_secret_str(open_ai_key),
-    verbose=True,
 )
 
 
@@ -42,6 +41,3 @@ def prompt(
     )
     # chain_prompt
     return chain_prompt | model
-
-
-# def menuPrompt

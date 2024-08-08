@@ -1,6 +1,6 @@
 from .base import Base
 
-from sqlalchemy import Integer, Text, DateTime, ForeignKey, Enum
+from sqlalchemy import Integer, Text, DateTime, ForeignKey, Enum, BigInteger
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
 
@@ -25,7 +25,7 @@ class Warning(Base):
     timestamp: Mapped[datetime] = mapped_column(DateTime, nullable=False, index=True)
 
     user_id: Mapped[int] = mapped_column(
-        Integer, ForeignKey("users.id"), nullable=False
+        BigInteger, ForeignKey("users.id"), nullable=False
     )
     user = relationship("User", back_populates="warnings")
 
