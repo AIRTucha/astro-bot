@@ -1,12 +1,8 @@
 from typing import List
 from ...logger.logger import logger
-from astrogpt.db_utils.get_messages import get_messages
 from astrogpt.models.user import User
 from astrogpt.bot_utils.reply_chat import ReplyChat
 from sqlalchemy.orm import Session
-from astrogpt.db_utils.get_messages import get_messages
-from astrogpt.bot_utils.language import get_language
-from astrogpt.db_utils.add_message import add_message
 from astrogpt.handler.llm_reasoning.action_result import ActionResult
 from astrogpt.handler.llm_reasoning.collect_data import (
     collect_data,
@@ -26,12 +22,6 @@ async def handle_main_menu(
     user: User,
     session: Session,
 ) -> List[object]:
-    add_message(
-        session=session,
-        user_id=user.id,
-        message=chat.get_message_text(),
-        from_user=True,
-    )
     user_id = chat.get_user_id()
 
     previous_actions: List[object] = []

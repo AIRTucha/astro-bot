@@ -22,6 +22,7 @@ from astrogpt.bot_utils.send_welcome_message import send_welcome_message
 from astrogpt.handler.llm_reasoning.detect_unintended_behavior import (
     detect_unintended_behavior,
 )
+from astrogpt.db_utils.add_message import add_message
 
 
 async def handle_text_input_with_llm(
@@ -54,6 +55,13 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
             chat.refresh_state(session)
 
             actions_take = await handle_text_input_with_llm(chat, user, session)
+
+            add_message(
+                session=session,
+                user_id=user.id,
+                message=chat.get_message_text(),
+                from_user=True,
+            )
 
             if len(actions_take) == 0:
                 await send_critical_error(chat, "No actions taken")
