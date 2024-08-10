@@ -3,23 +3,19 @@ from sqlalchemy import desc
 from astrogpt.models.messages import Message
 from astrogpt.models.joke import Joke
 
+
 joke_example = [
     """
-First date
-Her: So what do you do?
-Him: I'm currently trying to eliminate all cancers
-Her: Wow, impressive
-Him: Then I'Il move on to Virgos
+Why did the Aries cross the road?
+To prove they could do it faster and better than anyone else!
 """,
     """
-What sign are you most compatible
-with?
-
-The dollar sign.
+Why do Leos love Instagram?
+Because they get to share their greatness with the world, one post at a time.
 """,
     """
-man I swear it only takes 1 mercury retrograde for someone to start
-believing in astrology Imao
+How do you spot a Sagittarius at the airport?
+They’re the ones with the biggest smile and the smallest luggage.
 """,
 ]
 

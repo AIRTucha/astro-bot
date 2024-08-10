@@ -41,7 +41,7 @@ async def detect_unintended_behavior(
 
     logger.info("Unintended behavior detected %s", unintendedBehaviorDetector)
     if (
-        unintendedBehaviorDetector.confidence > 0.75
+        unintendedBehaviorDetector.confidence >= 0.7
         and unintendedBehaviorDetector.warning is not None
     ):
         add_warning(

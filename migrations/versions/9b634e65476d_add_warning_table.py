@@ -31,6 +31,7 @@ def upgrade() -> None:
                 "inappropriate_behavior",
                 "repetitive_unrelated_input",
                 "inappropriate_language",
+                "output_manipulation",
                 name="warningtype",
             ),
             nullable=False,

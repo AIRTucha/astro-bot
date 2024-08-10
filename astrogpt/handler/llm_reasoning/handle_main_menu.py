@@ -15,6 +15,7 @@ from astrogpt.handler.llm_reasoning.generate_joke import generate_joke
 from astrogpt.handler.llm_reasoning.generate_advice import generate_advice
 from astrogpt.handler.llm_reasoning.get_daily_forecast import get_daily_forecast
 from astrogpt.llm.parsers import MenuActions
+from random import random
 
 
 async def handle_main_menu(
@@ -50,6 +51,17 @@ async def handle_main_menu(
                     str(selected_action),
                 ),
             )
+
+            if (
+                MenuActions.get_joke_about_astrology not in handled_actions
+                and random() > 0.97
+            ):
+                previous_actions.append(
+                    ActionResult(
+                        "Action recommendation",
+                        f"Generate a joke about astrology to incorporate humor in the reply",
+                    ),
+                )
             if selected_action.selected_action == MenuActions.update_user_data:
                 try:
                     actions = await collect_data(

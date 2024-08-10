@@ -12,6 +12,7 @@ class WarningType(str, enum.Enum):
     inappropriate_behavior = "inappropriate_behavior"
     repetitive_unrelated_input = "repetitive_unrelated_input"
     inappropriate_language = "inappropriate_language"
+    output_manipulation = "output_manipulation"
 
 
 class Warning(Base):
