@@ -16,6 +16,8 @@ from astrogpt.handler.llm_reasoning.generate_advice import generate_advice
 from astrogpt.handler.llm_reasoning.get_daily_forecast import get_daily_forecast
 from astrogpt.llm.parsers import MenuActions
 from random import random
+from astrogpt.bot_utils.send_thinking_message import send_thinking_message
+from time import sleep
 
 
 async def handle_main_menu(
@@ -28,8 +30,18 @@ async def handle_main_menu(
     previous_actions: List[object] = []
     handled_actions = set()
 
+    is_thinking_message_sent = False
+
+    failed_attempts = 0
+
     while len(previous_actions) < 7:
         try:
+
+            if is_thinking_message_sent is False and random() > 0.85:
+                await send_thinking_message(session, chat, user)
+                is_thinking_message_sent = True
+                await chat.set_typing_action()
+
             selected_action = await select_action(chat, user, previous_actions, session)
 
             if selected_action.selected_action in handled_actions:
@@ -108,6 +120,7 @@ async def handle_main_menu(
             previous_actions.append(
                 ActionResult(action="Critical Error", result="Failed due to " + str(e))
             )
-            return previous_actions
+            failed_attempts += 1
+            sleep(1 * failed_attempts)
 
     return previous_actions

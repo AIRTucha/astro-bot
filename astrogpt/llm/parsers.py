@@ -33,7 +33,6 @@ class MenuActions(str, Enum):
     unsubscribe = "unsubscribe"
     request_input_clarification = "request_input_clarification"
     reply_to_user_with_result = "reply_to_user_with_result"
-    user_input_is_irrelevant = "user_input_is_irrelevant"
     ask_for_missing_user_data = "ask_for_missing_user_data"
     get_situational_advice = "get_situational_advice"
     get_joke_about_astrology = "get_joke_about_astrology"

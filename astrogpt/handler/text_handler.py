@@ -23,6 +23,7 @@ from astrogpt.handler.llm_reasoning.detect_unintended_behavior import (
     detect_unintended_behavior,
 )
 from astrogpt.db_utils.add_message import add_message
+from time import sleep
 
 
 async def handle_text_input_with_llm(
@@ -43,39 +44,49 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     user_input = chat.get_message_text()
 
     logger.info("User input %s: %s", user_id, user_input)
-    try:
-        with Session(engine) as session:
-            user = get_user_from_chat(session, chat)
-            if user is None:
-                logger.info("User does to exist %s", user_id)
-                create_user(session, chat)
-                await send_welcome_message(chat)
-                await handle_text(update, context)
+    attempts = 0
+
+    await chat.set_typing_action()
+
+    while attempts < 3:
+        try:
+            with Session(engine) as session:
+                user = get_user_from_chat(session, chat)
+                if user is None:
+                    logger.info("User does to exist %s", user_id)
+                    create_user(session, chat)
+                    await send_welcome_message(chat)
+                    await handle_text(update, context)
+                    return
+                chat.refresh_state(session)
+
+                actions_take = await handle_text_input_with_llm(chat, user, session)
+
+                add_message(
+                    session=session,
+                    user_id=user.id,
+                    message=chat.get_message_text(),
+                    from_user=True,
+                )
+
+                if len(actions_take) == 0:
+                    await send_critical_error(chat, "No actions taken")
+                    return
+
+                logger.info("Actions taken %s", actions_take)
+
+                await send_reply_to_user(
+                    session=session,
+                    chat=chat,
+                    user=user,
+                    actions_taken=actions_take,
+                    user_input=user_input,
+                )
                 return
-            chat.refresh_state(session)
 
-            actions_take = await handle_text_input_with_llm(chat, user, session)
+        except Exception as e:
+            logger.error("Error in handle_text %s", str(e))
+            attempts += 1
+            sleep(1 * attempts)
 
-            add_message(
-                session=session,
-                user_id=user.id,
-                message=chat.get_message_text(),
-                from_user=True,
-            )
-
-            if len(actions_take) == 0:
-                await send_critical_error(chat, "No actions taken")
-                return
-
-            logger.info("Actions taken %s", actions_take)
-
-            await send_reply_to_user(
-                session=session,
-                chat=chat,
-                user=user,
-                actions_taken=actions_take,
-                user_input=user_input,
-            )
-
-    except Exception as e:
-        await send_critical_error(chat, str(e))
+    await send_critical_error(chat, "Failed to process user input")

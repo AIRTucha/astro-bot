@@ -81,3 +81,10 @@ class ReplyChat(Chat):
 
     def get_message_text(self) -> str:
         return self.message.text if self.message.text is not None else ""
+
+    async def set_typing_action(self) -> None:
+        try:
+            await self.message.reply_chat_action("typing")
+        except Exception as e:
+            logger.error("Error setting typing action %s", e)
+            pass

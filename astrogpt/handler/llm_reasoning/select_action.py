@@ -32,8 +32,7 @@ async def select_action(
     user_name = chat.get_user_name()
     user_input = chat.get_message_text()
     user_id = chat.get_user_id()
-    messages = get_messages(session, user_id)
-
+    messages = get_messages(session, user_id, 7)
     previous_conversation = format_list(messages)
     previous_actions_str = format_list(previous_actions)
     user_language = get_language(chat)

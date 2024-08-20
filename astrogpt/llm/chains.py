@@ -4,6 +4,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from astrogpt.llm.prompt.advice_prompt import advice_prompt
 from astrogpt.llm.prompt.collect_data_prompt import collect_data_prompt
 from astrogpt.llm.prompt.joke_prompt import joke_prompt
+from astrogpt.llm.prompt.thinking_prompt import thinking_prompt
 from astrogpt.llm.prompt.menu_prompt import menu_prompt
 from astrogpt.llm.prompt.prediction_prompt import prediction_prompt
 from astrogpt.llm.prompt.reply_user_prompt import reply_user_prompt
@@ -72,3 +73,4 @@ unintended_behavior_detection_chain = (
 )
 
 joke_chain = prompt(textGenModel, joke_prompt) | StrOutputParser()
+thinking_chain = prompt(textGenModel, thinking_prompt) | StrOutputParser()
