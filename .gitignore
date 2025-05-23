@@ -135,3 +135,7 @@ dmypy.json
 cython_debug/
 
 data/
+
+*.env
+prod.cloudrun.env.yaml
+cert

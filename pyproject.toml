@@ -1,19 +1,25 @@
 [tool.poetry]
-name = "astro-gpt"
+name = "astrogpt"
 version = "0.1.0"
 description = ""
 authors = ["airtucha <airtucha@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "3.10.5"
+python = "3.12.2"
 python-telegram-bot = "^21.0.1"
-langchain = "^0.1.13"
-langchain-core = "^0.1.33"
-langchain-community = "^0.0.29"
-langchain-openai = "^0.1.1"
 psycopg2-binary = "^2.9.9"
 sqlalchemy = "^2.0.29"
+types-psycopg2 = "^2.9.21.20240417"
+fastapi = "^0.111.0"
+langchain = "^0.2.0"
+langchain-core = "^0.2.0"
+langchain-community = "^0.2.0"
+langchain-openai = "^0.1.7"
+mypy = "1.9.0"
+python-dotenv = "^1.0.1"
+alembic = "^1.13.1"
+sqlalchemy-cockroachdb = "^2.0.2"
 
 [build-system]
 requires = ["poetry-core"]

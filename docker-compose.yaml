@@ -23,9 +23,13 @@ services:
   app:
     build:
       context: .
-      target: development
+      target: dev
     depends_on:
       - db
+    env_file:
+      - ./dev.env
     restart: "no"
+    ports:
+      - "8000:8000"
     volumes:
       - .:/app

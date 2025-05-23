@@ -5,16 +5,20 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from src.models.base import Base
+from astrogpt.models.base import Base
+
+import os
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
+db_url = os.getenv("DATABASE_URL")
 
-config.set_main_option(
-    "sqlalchemy.url",
-    "postgresql+psycopg2://postgres:local_password@0.0.0.0:5432/astro-db",
-)
+if not (db_url is None):
+    config.set_main_option(
+        "sqlalchemy.url",
+        db_url,
+    )
 
 
 # Interpret the config file for Python logging.

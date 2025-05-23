@@ -1,31 +1,43 @@
-from src.start_bot import start_bot
+from astrogpt.start_bot import Bot
 
-from src.llm.chains import translate_system_error_chain
-from src.bot_utils.language import languages, error_messages
-from json import load, dumps
+from fastapi import FastAPI, Request
 
+from contextlib import asynccontextmanager
 
-def main() -> None:
-    start_bot("7189953918:AAEHKCoCuYW62FLZPt2lC1VqE_h0MaBKCaQ")
-    # print(translate_system_error_chain.invoke({"language": "Russian"}))
+import os
 
-    # inverted_languages = {v: k for k, v in languages.items()}
-
-    # subs_file = open("error_file.json", "w")
-    # unsub_file = open("unsubscriptions.json", "w")
-
-    # new_subs = {}
-    # new_unsubs = {}
-
-    # for lang, code in inverted_languages.items():
-    #     new_subs[code] = error_messages[lang]
-
-    # subs_file.write(dumps(new_subs))
-    # # unsub_file.write(dumps(new_unsubs))
-
-    # subs_file.close()
-    # unsub_file.close()
+bot = Bot(os.environ["TG_BOT_TOKEN"])
 
 
-if __name__ == "__main__":
-    main()
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    await bot.start()
+    yield
+    await bot.stop()
+
+
+app = FastAPI(
+    lifespan=lifespan,
+)
+
+
+@app.post("/tg_webhook")
+async def process_update(request: Request):
+    req = await request.json()
+    await bot.process_update(req)
+
+
+@app.post("/sent_daily_forecast")
+async def send_daily_forecast():
+    await bot.send_daily_forecast()
+    return {"status": "ok"}
+
+
+@app.post("/ready")
+async def ready():
+    return {"status": "ready"}
+
+
+@app.post("/health")
+async def health():
+    return {"status": "ok"}
