@@ -31,6 +31,7 @@ CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--reload"]
 
 FROM base as prod
 
+# Certificates for Postgres connection
 COPY cert/ ../root/
 
 # Copy the current directory contents into the container at /app
